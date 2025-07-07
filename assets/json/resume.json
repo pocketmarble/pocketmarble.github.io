@@ -1,190 +1,212 @@
 {
   "basics": {
-    "name": "Albert Einstein",
+    "name": "Austin Meadows",
     "label": "Scientist",
     "image": "",
-    "email": "albert@einstein.de",
-    "phone": "(912) 123-4567",
-    "url": "https://alshedivat.github.io/al-folio/",
-    "summary": "A German-born theoretical physicist, widely ranked among the greatest and most influential scientists of all time",
+    "email": "austxn.meadows@gmail.com",
+    "phone": "(631) 902-4991",
+    "url": "https://pocketmarble.github.io",
+    "summary": "I am a scientist with a decade of experience working in the New York research community seeking a role focused on research, data science, and technological development. Please see my website for more details about my projects and publications",
     "location": {
-      "address": "2712 Broadway St",
-      "postalCode": "CA 94115",
-      "city": "San Francisco",
+      "address": "",
+      "postalCode": "NY 11222",
+      "city": "Brooklyn",
       "countryCode": "US",
-      "region": "California"
+      "region": "New York"
     },
     "profiles": [
       {
-        "network": "Twitter",
-        "username": "AlbertEinstein",
-        "url": "https://twitter.com/AlbertEinstein"
+        "network": "",
+        "username": "",
+        "url": ""
       }
     ]
   },
   "work": [
     {
-      "name": "Institute for Advanced Study, Princeton University",
-      "position": "Professor of Theoretical Physics",
-      "url": "https://example.com",
-      "startDate": "1933-01-01",
-      "endDate": "1955-01-01",
-      "summary": "Teaching at Palmer Physical Laboratory (now 302 Frist Campus Center). While not a professor at Princeton, I associated with the physics professors and continued to give lectures on campus.",
-      "highlights": ["Relativity"]
-    }
-  ],
-  "volunteer": [
+      "name": "Instituto de Salud Carlos III",
+      "position": "Ph.D. Candidate",
+      "url": "",
+      "startDate": "2023-12-27",
+      "endDate": "",
+      "summary": "Pathology of trained immunity (TI) in the lab of Dr. Jordi Ochando",
+      "highlights": ["characterize and therapeutically target TI in chronic kidney disease", "Developed first ex-vivo model of dialysis-mediated TI + first clinical TI diagnostic"]
+    },
     {
-      "organization": "People's Climate March",
-      "location": "Zurich, Switzerland",
-      "position": "Lead Organizer",
-      "url": "https://example.com",
-      "startDate": "2014-04-01",
-      "endDate": "2015-07-01",
-      "summary": "Lead organizer for the New York City branch of the People's Climate March, the largest climate march in history.",
-      "highlights": ["Awarded 'Climate Hero' award by Greenpeace for my efforts organizing the march.", "Men of the year 2014 by Time magazine"]
+      "name": "Icahn School of Medicine at Mount Sinai",
+      "position": "Associate Researcher",
+      "url": "",
+      "startDate": "2021-12-01",
+      "endDate": "",
+      "summary": "Genomics subject matter expert supporting academic research",
+      "highlights": ["Discovered novel hepatocellular carcinoma drug", "Developed epigenetic treatment strategy for melanoma", "Developed nanoparticle biologic for lung transplant rejection", "preliminary data used to secure $4.4M in NIH awards"]
+    },
+    {
+      "name": "Girihlet, Inc.",
+      "position": "Sequencing Technician",
+      "url": "",
+      "startDate": "2020-11-01",
+      "endDate": "2021-12-01",
+      "summary": "Provided next-gen sequencing (NGS) services to NYC research community",
+      "highlights": ["Tailored NGS solutions for clients from consultation to data generation", "Automated our workflow with a custom software framework and custom robotics"]
+    },
+    {
+      "name": "NYIT College of Osteopathic Medicine",
+      "position": "Research Technician",
+      "url": "",
+      "startDate": "2018-11-01",
+      "endDate": "2020-07-01",
+      "summary": "Supported research efforts of the NYITCOM dept. of Biomedical Sciences",
+      "highlights": ["Created ML tool for cell deconvolution in tumor sequencing data", "Created a neuroscience teaching resource for medical students", "Prepared historically underrepresented students for higher education as coordinator of the STEP program"]
+    },
+    {
+      "name": "Stony Brook University",
+      "position": "Undergraduate Researcher",
+      "url": "",
+      "startDate": "2016-12-01",
+      "endDate": "2018-05-01",
+      "summary": "Multiomics research in the lab of Dr. Eric Brouzes",
+      "highlights": ["Created a microscope climate chamber for long-duration imaging experiments of sensitive cells", "Created an automated yeast culture device"]
     }
   ],
   "education": [
     {
-      "institution": "University of Zurich, Zurich, Switzerland",
-      "location": "Zurich, Switzerland",
-      "url": "https://www.uzh.ch/",
-      "area": "Software Development",
-      "studyType": "PhD",
-      "startDate": "1905-01-01",
-      "endDate": "1905-01-01",
-      "score": "10",
-      "courses": ["Theory of Relativity"]
-    }
-  ],
-  "awards": [
-    {
-      "title": "Nobel Prize in Physics",
-      "date": "1921-11-01",
-      "awarder": "Royal Swedish Academy of Sciences",
-      "url": "https://www.nobelprize.org/prizes/physics/1921/einstein/biographical/",
-      "summary": "The Nobel Prizes are five separate prizes that, according to Alfred Nobel's will of 1895, are awarded to 'those who, during the preceding year, have conferred the greatest benefit to humankind.'"
-    }
-  ],
-  "certificates": [
-    {
-      "name": "Machine Learning",
-      "date": "2018-01-01",
-      "issuer": "Stanford University",
-      "url": "https://example.com",
-      "icon": "fa-solid fa-location-dot"
+      "institution": "Stony Brook University",
+      "location": "Long Island, New York",
+      "url": "https://stonybrook.edu",
+      "area": "Biomedical Engineering",
+      "studyType": "Bachelor's of Engineering",
+      "startDate": "2015-01-27",
+      "endDate": "2018-05-18",
+      "score": "",
+      "courses": [""]
     },
     {
-      "name": "Quantum Computing",
-      "date": "2018-01-01",
-      "issuer": "Stanford University",
-      "url": "https://example.com",
-      "icon": "fa-solid fa-tag"
+      "institution": "Stony Brook University",
+      "location": "Long Island, New York",
+      "url": "https://stonybrook.edu",
+      "area": "Applied Mathematics and Statistics",
+      "studyType": "Bachelor's of Science",
+      "startDate": "2015-01-27",
+      "endDate": "2018-05-18",
+      "score": "",
+      "courses": [""]
     },
     {
-      "name": "Quantum Information",
-      "date": "2018-01-01",
-      "issuer": "Stanford University",
-      "url": "https://example.com",
-      "icon": "fa-solid fa-envelope"
-    },
-    {
-      "name": "Quantum Cryptography",
-      "date": "2018-01-01",
-      "issuer": "Stanford University",
-      "url": "https://example.com",
-      "icon": "fa-solid fa-hashtag"
-    },
-    {
-      "name": "Quantum Communication",
-      "date": "2018-01-01",
-      "issuer": "Stanford University",
-      "url": "https://example.com",
-      "icon": "fa-solid fa-calendar"
-    },
-    {
-      "name": "Quantum Teleportation",
-      "date": "2018-01-01",
-      "issuer": "Stanford University",
-      "url": "https://example.com",
-      "icon": "fa-solid fa-clipboard-check"
+      "institution": "Instituto de Salud Carlos III",
+      "location": "Madrid, Spain",
+      "url": "https://www.isciii.es",
+      "area": "Biomedical Sciences and Public Health",
+      "studyType": "Ph.D.",
+      "startDate": "2023-12-27",
+      "endDate": "2026-12-27",
+      "score": "",
+      "courses": [""]
     }
   ],
   "publications": [
     {
-      "name": "Zur Elektrody/namik bewegter Körper",
-      "publisher": "Annalen der Physik",
-      "releaseDate": "1905-06-30",
-      "url": "https://en.wikisource.org/wiki/Translation:On_the_Electrodynamics_of_Moving_Bodies",
-      "summary": "It concerned an interpretation of the Michelson–Morley experiment and the properties of light and time. Special relativity incorporates the principle that the speed of light is the same for all inertial observers regardless of the state of motion of the source."
+      "name": "WNTinib is a multi-kinase inhibitor with specificity against beta-catenin mutant hepatocellular carcinoma",
+      "publisher": "Nature Cancer",
+      "releaseDate": "2023-08-03",
+      "url": "https://www.nature.com/articles/s43018-023-00609-9",
+      "summary": "WNTinib, a selective multi-kinase inhibitor, effectively targets CTNNB1-mutant hepatocellular carcinoma by inhibiting KIT/MAPK signaling and engaging EZH2-mediated transcriptional repression, offering a potent and durable therapy with high specificity and safety."
     },
     {
-      "name": "Über einen die Erzeugung und Verwandlung des Lichtes betreffenden heuristischen Gesichtspunkt",
-      "publisher": "Annalen der Physik",
-      "releaseDate": "1905-03-18",
-      "url": "https://de.wikisource.org/wiki/Über_einen_die_Erzeugung_und_Verwandlung_des_Lichtes_betreffenden_heuristischen_Gesichtspunkt",
-      "summary": "In the second paper, he applied the quantum theory to light to explain the photoelectric effect. In particular, he used the idea of light quanta (photons) to explain experimental results, but stressed the importance of the experimental results. The importance of his work on the photoelectric effect earned him the Nobel Prize in Physics in 1921."
+      "name": "Click chemistry approaches to expand the repertoire of PEG-based fluorinated surfactants for droplet microfluidics",
+      "publisher": "Royal Society of Chemistry",
+      "releaseDate": "2018-04-06",
+      "url": "https://pubs.rsc.org/en/content/articlelanding/2018/ra/c8ra01254g",
+      "summary": "We developed a simplified, click chemistry-based synthesis of novel fluorinated PFPE–PEG surfactants that stabilize droplets in microfluidics, enabling easier production of diverse, biocompatible emulsions."
     },
     {
-      "name": "Die Grundlage der allgemeinen Relativitätstheorie",
-      "publisher": "Annalen der Physik",
-      "releaseDate": "1916-03-20",
-      "url": "https://de.wikisource.org/wiki/Die_Grundlage_der_allgemeinen_Relativitätstheorie",
-      "summary": "The publication of the theory of general relativity made him internationally famous. He was professor of physics at the universities of Zurich (1909–1911) and Prague (1911–1912), before he returned to ETH Zurich (1912–1914)."
+      "name": "The T cell receptor repertoire reflects the dynamics of the immune response to vaccination",
+      "publisher": "BioRxiv",
+      "releaseDate": "2021-12-19",
+      "url": "https://www.biorxiv.org/content/10.1101/2021.12.09.471735v2.abstract",
+      "summary": "Tseek, a novel TCR repertoire sequencing method, enables early, detailed, and non-invasive profiling of individual T cell responses to vaccines, revealing unique immune dynamics and potential for personalized immune monitoring."
+    },
+    {
+      "name": "Active Learning Exercises in Synaptic Physiology and Connectivity for the Neuroscience Lecture Hall, Laboratory Course, or Outreach Setting",
+      "publisher": "Journal of Undergraduate Neuroscience Education",
+      "releaseDate": "2024-12-24",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11728993/",
+      "summary": "We present novel active learning exercises for teaching neuronal circuits and synaptic connectivity in lecture-based neuroscience courses to enhance student understanding and retention."
+    },
+    {
+      "name": "H2A.Z chaperones converge on E2F target genes for melanoma cell proliferation",
+      "publisher": "Genes & Development",
+      "releaseDate": "2024-04-29",
+      "url": "https://genesdev.cshlp.org/content/38/7-8/336.short",
+      "summary": "H2A.Z chaperone complexes SRCAP and P400–TIP60 coordinate H2A.Z deposition and H4 acetylation to promote melanoma proliferation, with YL1 overexpression linked to poor prognosis and apoptosis upon its loss, highlighting them as potential therapeutic targets."
+    },
+    {
+      "name": "Community assessment of methods to deconvolve cellular composition from bulk gene expression",
+      "publisher": "Nature Communications",
+      "releaseDate": "2024-08-27",
+      "url": "https://www.nature.com/articles/s41467-024-50618-0",
+      "summary": "A community-wide DREAM Challenge benchmarking deconvolution methods reveals that while many accurately infer immune cell infiltration in tumors, deep learning approaches improve detection of functional T cell states, providing valuable resources for method development."
     }
   ],
   "skills": [
     {
-      "name": "Physics",
+      "name": "Laboratory",
       "level": "Master",
       "icon": "fa-solid fa-hashtag",
       "keywords": [
-        "Quantum Mechanics",
-        "Quantum Computing",
-        "Quantum Information",
-        "Quantum Cryptography",
-        "Quantum Communication",
-        "Quantum Teleportation"
+        "ATACseq", "RNAseq", "CUT&Tag", "immunofluorescence", "sequencing", "animal work", "cell culture", "microscopy", "flow cytometry"
+      ]
+    },
+    {
+      "name": "Computational",
+      "level": "Master",
+      "icon": "fa-solid fa-hashtag",
+      "keywords": [
+        "Python", "R", "MATLAB", "IBM LSF", "Docker", "Bash", "Adobe Creative Suite", "data analysis", "web development"
+      ]
+    },
+    {
+      "name": "General",
+      "level": "Master",
+      "icon": "fa-solid fa-hashtag",
+      "keywords": [
+        "fostering industry relationships", "grant writing", "mentorship", "presentation", "lab management"
       ]
     }
   ],
   "languages": [
     {
-      "language": "German",
+      "language": "English",
       "fluency": "Native speaker",
       "icon": ""
     },
     {
-      "language": "English",
-      "fluency": "Fluent",
+      "language": "Spanish",
+      "fluency": "Conversational",
       "icon": ""
     }
   ],
   "interests": [
     {
-      "name": "Physics",
+      "name": "General",
       "icon": "fa-solid fa-tag",
       "keywords": [
-        "Quantum Mechanics",
-        "Quantum Computing",
-        "Quantum Information",
-        "Quantum Cryptography",
-        "Quantum Communication",
-        "Quantum Teleportation"
+        "reading",
+        "writing poetry",
+        "writing music",
+        "guitar",
+        "piano",
+        "cycling",
+        "working out",
+        "living"
       ]
     }
   ],
   "references": [
     {
-      "name": "Professor John Doe",
+      "name": "",
       "icon": "fa-solid fa-laptop",
-      "reference": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum, diam quis convallis euismod, arcu mi ullamcorper lorem, a vestibulum nunc magna at sem. Sed in risus ac felis varius blandit. D"
-    },
-    {
-      "name": "Professor John Doe",
-      "icon": "fa-solid fa-thumbtack",
-      "reference": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum, diam quis convallis euismod, arcu mi ullamcorper lorem, a vestibulum nunc magna at sem. Sed in risus ac felis varius blandit. D"
+      "reference": ""
     }
   ],
   "projects": [
