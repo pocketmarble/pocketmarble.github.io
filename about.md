@@ -26,8 +26,8 @@ latest_posts:
   limit: 3 # leave blank to include all the blog posts
 ---
 
-Hey there - I'm Austin, and welcome to my website! Born & raised on Long Island, and living in Brooklyn for the past 4 years . . . most of the time you'll find me making music & poetry, biking around the city, hanging with my friends, reading, or playing video games
+Hey I'm Austin 👋 welcome to my website! Born & raised on Long Island, currently living in Brooklyn - you'll mostly find me making music/poetry, bike-exploring, friend-hanging, reading, playing video games, hiking ... too much to bother listing hm
 
-My scientific career spans a decade of work within the New York academic community. My technical repertoire - which centers on genomics and bioengineering - has grown through collaborations and projects in cancer, immunology, virology, and machine learning. I am currently finishing a Ph.D. degree in Biomedical Sciences and Public Health at the Instituto de Salud Carlos III in Madrid via the Icahn School of Medicine in NYC
+My career spans a decade of work in the New York academic community. My technical repertoire - centering on genomics and bioengineering - has grown through collaborative projects in cancer, immunology, virology, and machine learning. I am currently finishing a Ph.D. in Biomedical Sciences and Public Health at the Instituto de Salud Carlos III in Madrid via the Icahn School of Medicine in NYC
 
 Check out the navigation bar above to find my [projects](https://pocketmarble.github.io/projects/) and [publications](https://pocketmarble.github.io/publications/). I don't have social media, but for those interested I do have a [LinkedIn](https://www.linkedin.com/in/austin-meadows-484537319/). My [resume](https://pocketmarble.github.io/cv/) is available for view above in web format, I plan to keep up with the [blog](https://pocketmarble.github.io/blog/), and the [bookshelf](https://pocketmarble.github.io/bookshelf/) has reviews of my latest reads
