@@ -32,14 +32,21 @@ ninja.data = [{
           },
         },{id: "nav-projects",
           title: "projects",
-          description: "A growing collection of your cool projects.",
+          description: "Here are the projects that I&#39;ve worked on over the years - some have been for work, and others for fun 😎",
           section: "Navigation",
           handler: () => {
             window.location.href = "/projects/";
           },
-        },{id: "nav-resume",
-          title: "resume",
-          description: "My resume in a web-formatted presentation. Click the pdf icon just over to the right to open my official resume",
+        },{id: "nav-repositories",
+          title: "repositories",
+          description: "Edit the `_data/repositories.yml` and change the `github_users` and `github_repos` lists to include your own GitHub profile and repositories.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/repositories/";
+          },
+        },{id: "nav-cv",
+          title: "cv",
+          description: "This is a description of the page. You can modify it in &#39;_pages/cv.md&#39;. You can also change or remove the top pdf download button.",
           section: "Navigation",
           handler: () => {
             window.location.href = "/cv/";
@@ -51,7 +58,42 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/cv/";
           },
-        },{id: "post-a-post-with-plotly-js",
+        },{id: "nav-resume",
+          title: "resume",
+          description: "My resume in a web-formatted presentation. Click the pdf icon just over to the right to open my official resume",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/cv/";
+          },
+        },{id: "nav-teaching",
+          title: "teaching",
+          description: "Materials for courses you taught. Replace this text with your description.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/teaching/";
+          },
+        },{id: "nav-people",
+          title: "people",
+          description: "members of the lab or group",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/people/";
+          },
+        },{id: "dropdown-bookshelf",
+              title: "bookshelf",
+              description: "",
+              section: "Dropdown",
+              handler: () => {
+                window.location.href = "/books/";
+              },
+            },{id: "dropdown-blog",
+              title: "blog",
+              description: "",
+              section: "Dropdown",
+              handler: () => {
+                window.location.href = "/blog/";
+              },
+            },{id: "post-a-post-with-plotly-js",
         
           title: "a post with plotly.js",
         
@@ -430,11 +472,51 @@ ninja.data = [{
             },},{id: "news-a-simple-inline-announcement-with-markdown-emoji-sparkles-smile",
           title: 'A simple inline announcement with Markdown emoji! :sparkles: :smile:',
           description: "",
-          section: "News",},{id: "projects-corrected-projections-algorithm-cpa",
-          title: 'Corrected Projections Algorithm (CPA)',
-          description: "a classification algorithm inspired by the rat corticothalamic circuit",
+          section: "News",},{id: "projects-reverse-ratatouille",
+          title: 'Reverse Ratatouille',
+          description: "Applying CPA (Corrected Projections Algorithm), an algorithm inspired by the rat corticothalamic circuit, to various problems",
           section: "Projects",handler: () => {
               window.location.href = "/projects/1_project/";
+            },},{id: "projects-web-app-literally",
+          title: 'Web app (literally)',
+          description: "An online application for teaching med students about patch clamp electrophysiology, a technique for mapping neuron webs",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/2_project/";
+            },},{id: "projects-automating-the-bench",
+          title: 'Automating the bench',
+          description: "A software framework allowing non-coders to create and execute wet lab protocols on a robot",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/3_project/";
+            },},{id: "projects-studying-excit",
+          title: 'Studying ExCIT',
+          description: "An in-vitro model of extracorporeal circulation induced trained immunity (ExCIT) and an assay for its clinical detection",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/4_project/";
+            },},{id: "projects-turbidostat",
+          title: 'Turbidostat',
+          description: "An open-source 3D printed device to automate yeast culture",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/5_project/";
+            },},{id: "projects-microscope-incubator",
+          title: 'Microscope incubator',
+          description: "an enclosure to maintain a suitable environment for eukaryotic cells during long-duration imaging",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/6_project/";
+            },},{id: "projects-transformer-ex-nihilo",
+          title: 'Transformer ex-nihilo',
+          description: "What better way to learn about transformers than to build one from the ground up?",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/7_project/";
+            },},{id: "projects-consultantgpt",
+          title: 'ConsultantGPT',
+          description: "A fun, light-hearted challenge issued by my best friend that I couldn&#39;t automate his job, rendering him completely obsolete",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/8_project/";
+            },},{id: "projects-project-9",
+          title: 'project 9',
+          description: "another project with an image 🎉",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/9_project/";
             },},{
         id: 'social-email',
         title: 'email',
@@ -443,11 +525,18 @@ ninja.data = [{
           window.open("mailto:%61%75%73%74%78%6E.%6D%65%61%64%6F%77%73@%67%6D%61%69%6C.%63%6F%6D", "_blank");
         },
       },{
+        id: 'social-inspire',
+        title: 'Inspire HEP',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://inspirehep.net/authors/1010907", "_blank");
+        },
+      },{
         id: 'social-orcid',
         title: 'ORCID',
         section: 'Socials',
         handler: () => {
-          window.open("https://orcid.org/0000-0003-4309-2315 your ORCID ID", "_blank");
+          window.open("https://orcid.org/0000-0003-4309-2315", "_blank");
         },
       },{
         id: 'social-rss',
