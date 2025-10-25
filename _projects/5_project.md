@@ -1,8 +1,8 @@
 ---
 layout: page
-title: Reverse Ratatouille
-description: Applying CPA (Corrected Projections Algorithm), an algorithm inspired by the rat corticothalamic circuit, to various problems
-img: assets/img/ratatouille.png
+title: Turbidostat
+description: An open-source 3D printed device to automate yeast culture
+img: assets/img/turbidostat.png
 importance: 1
 category: work
 related_publications: true

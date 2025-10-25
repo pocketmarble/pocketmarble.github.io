@@ -1,8 +1,8 @@
 ---
 layout: page
-title: Reverse Ratatouille
-description: Applying CPA (Corrected Projections Algorithm), an algorithm inspired by the rat corticothalamic circuit, to various problems
-img: assets/img/ratatouille.png
+title: Web app (literally) 
+description: An online application for teaching med students about patch clamp electrophysiology, a technique for mapping neuron webs
+img: assets/img/WCPC.jpeg
 importance: 1
 category: work
 related_publications: true

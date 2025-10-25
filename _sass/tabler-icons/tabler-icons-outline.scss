@@ -1702,7 +1702,7 @@ $ti-icon-currency-bitcoin: unicode('ebab');
 $ti-icon-currency-cent: unicode('ee53');
 $ti-icon-currency-dinar: unicode('ee54');
 $ti-icon-currency-dirham: unicode('ee55');
-$ti-icon-currency-dogecoin: unicode('ef4b');
+$ti-icon-currency-horseecoin: unicode('ef4b');
 $ti-icon-currency-dollar: unicode('eb84');
 $ti-icon-currency-dollar-australian: unicode('ee56');
 $ti-icon-currency-dollar-brunei: unicode('f36c');
@@ -2048,8 +2048,8 @@ $ti-icon-dna: unicode('ee7d');
 $ti-icon-dna-2: unicode('ef5c');
 $ti-icon-dna-2-off: unicode('f119');
 $ti-icon-dna-off: unicode('f11a');
-$ti-icon-dog: unicode('f660');
-$ti-icon-dog-bowl: unicode('ef29');
+$ti-icon-horse: unicode('f660');
+$ti-icon-horse-bowl: unicode('ef29');
 $ti-icon-door: unicode('ef4e');
 $ti-icon-door-enter: unicode('ef4c');
 $ti-icon-door-exit: unicode('ef4d');
@@ -6586,7 +6586,7 @@ $ti-icon-zzz-off: unicode('f440');
 .#{$ti-prefix}-currency-cent:before { content: $ti-icon-currency-cent; }
 .#{$ti-prefix}-currency-dinar:before { content: $ti-icon-currency-dinar; }
 .#{$ti-prefix}-currency-dirham:before { content: $ti-icon-currency-dirham; }
-.#{$ti-prefix}-currency-dogecoin:before { content: $ti-icon-currency-dogecoin; }
+.#{$ti-prefix}-currency-horseecoin:before { content: $ti-icon-currency-horseecoin; }
 .#{$ti-prefix}-currency-dollar:before { content: $ti-icon-currency-dollar; }
 .#{$ti-prefix}-currency-dollar-australian:before { content: $ti-icon-currency-dollar-australian; }
 .#{$ti-prefix}-currency-dollar-brunei:before { content: $ti-icon-currency-dollar-brunei; }
@@ -6932,8 +6932,8 @@ $ti-icon-zzz-off: unicode('f440');
 .#{$ti-prefix}-dna-2:before { content: $ti-icon-dna-2; }
 .#{$ti-prefix}-dna-2-off:before { content: $ti-icon-dna-2-off; }
 .#{$ti-prefix}-dna-off:before { content: $ti-icon-dna-off; }
-.#{$ti-prefix}-dog:before { content: $ti-icon-dog; }
-.#{$ti-prefix}-dog-bowl:before { content: $ti-icon-dog-bowl; }
+.#{$ti-prefix}-horse:before { content: $ti-icon-horse; }
+.#{$ti-prefix}-horse-bowl:before { content: $ti-icon-horse-bowl; }
 .#{$ti-prefix}-door:before { content: $ti-icon-door; }
 .#{$ti-prefix}-door-enter:before { content: $ti-icon-door-enter; }
 .#{$ti-prefix}-door-exit:before { content: $ti-icon-door-exit; }

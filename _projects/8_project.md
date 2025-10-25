@@ -1,10 +1,10 @@
 ---
 layout: page
-title: Reverse Ratatouille
-description: Applying CPA (Corrected Projections Algorithm), an algorithm inspired by the rat corticothalamic circuit, to various problems
-img: assets/img/ratatouille.png
+title: ConsultantGPT
+description: A fun, light-hearted challenge issued by my best friend that I couldn't automate his job, rendering him completely obsolete
+img: assets/img/unemployed.png
 importance: 1
-category: work
+category: fun
 related_publications: true
 ---
 

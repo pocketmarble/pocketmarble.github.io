@@ -1,8 +1,8 @@
 ---
 layout: page
-title: Reverse Ratatouille
-description: Applying CPA (Corrected Projections Algorithm), an algorithm inspired by the rat corticothalamic circuit, to various problems
-img: assets/img/ratatouille.png
+title:  Studying ExCIT
+description: An in-vitro model of extracorporeal circulation induced trained immunity (ExCIT) and an assay for its clinical detection
+img: assets/img/ExCIT_assay.png
 importance: 1
 category: work
 related_publications: true

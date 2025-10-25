@@ -1,8 +1,8 @@
 ---
 layout: page
-title: Reverse Ratatouille
-description: Applying CPA (Corrected Projections Algorithm), an algorithm inspired by the rat corticothalamic circuit, to various problems
-img: assets/img/ratatouille.png
+title: Microscope incubator
+description: an enclosure to maintain a suitable environment for eukaryotic cells during long-duration imaging
+img: assets/img/microscope.webp
 importance: 1
 category: work
 related_publications: true

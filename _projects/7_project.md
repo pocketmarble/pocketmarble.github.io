@@ -1,10 +1,10 @@
 ---
 layout: page
-title: Reverse Ratatouille
-description: Applying CPA (Corrected Projections Algorithm), an algorithm inspired by the rat corticothalamic circuit, to various problems
-img: assets/img/ratatouille.png
+title: Transformer ex-nihilo
+description: What better way to learn about transformers than to build one from the ground up?
+img: assets/img/transformer.webp
 importance: 1
-category: work
+category: fun
 related_publications: true
 ---
 

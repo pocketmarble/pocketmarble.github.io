@@ -1,8 +1,8 @@
 ---
 layout: page
-title: Reverse Ratatouille
-description: Applying CPA (Corrected Projections Algorithm), an algorithm inspired by the rat corticothalamic circuit, to various problems
-img: assets/img/ratatouille.png
+title: Automating the bench
+description: A software framework allowing non-coders to create and execute wet lab protocols on a robot
+img: assets/img/ot2.webp
 importance: 1
 category: work
 related_publications: true
