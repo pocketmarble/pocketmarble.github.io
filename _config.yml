@@ -207,7 +207,7 @@ plugins:
   - jekyll-minifier
   - jekyll-paginate-v2
   - jekyll-regex-replace
-  - jekyll-scholar
+  - jekyll/scholar
   - jekyll-sitemap
   - jekyll-tabs
   - jekyll-terser
@@ -348,6 +348,7 @@ external_links:
 #   convert -version
 imagemagick:
   enabled: false # enables responsive images for your site (recommended, see https://github.com/alshedivat/al-folio/issues/537)
+
   widths:
     - 480
     - 800
@@ -453,7 +454,7 @@ third_party_libraries:
     version: "11.9.0"
   imagesloaded:
     integrity:
-      js: "sha256-htrLFfZJ6v5uhorse+3kNLINIKh2gvoKqwEhHYfTTMICc="
+      js: "sha256-htrLFfZJ6v5udOG+3kNLINIKh2gvoKqwEhHYfTTMICc="
     url:
       js: https://cdn.jsdelivr.net/npm/imagesloaded@{{version}}/imagesloaded.pkgd.min.js
     version: "5.0.0"
