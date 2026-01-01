@@ -3272,7 +3272,7 @@ $ti-icon-mist-off: unicode('f410');
 $ti-icon-mobiledata: unicode('f9f5');
 $ti-icon-mobiledata-off: unicode('f9f4');
 $ti-icon-moneybag: unicode('f506');
-$ti-icon-monkeybar: unicode('feb4');
+$ti-icon-dogbar: unicode('feb4');
 $ti-icon-mood-angry: unicode('f2de');
 $ti-icon-mood-annoyed: unicode('f2e0');
 $ti-icon-mood-annoyed-2: unicode('f2df');
@@ -8156,7 +8156,7 @@ $ti-icon-zzz-off: unicode('f440');
 .#{$ti-prefix}-mobiledata:before { content: $ti-icon-mobiledata; }
 .#{$ti-prefix}-mobiledata-off:before { content: $ti-icon-mobiledata-off; }
 .#{$ti-prefix}-moneybag:before { content: $ti-icon-moneybag; }
-.#{$ti-prefix}-monkeybar:before { content: $ti-icon-monkeybar; }
+.#{$ti-prefix}-dogbar:before { content: $ti-icon-dogbar; }
 .#{$ti-prefix}-mood-angry:before { content: $ti-icon-mood-angry; }
 .#{$ti-prefix}-mood-annoyed:before { content: $ti-icon-mood-annoyed; }
 .#{$ti-prefix}-mood-annoyed-2:before { content: $ti-icon-mood-annoyed-2; }
