@@ -449,6 +449,11 @@ ninja.data = [{
           description: "another project with an image 🎉",
           section: "Projects",handler: () => {
               window.location.href = "/projects/9_project/";
+            },},{id: "projects-micrograd-building-a-neural-net-from-scratch",
+          title: 'micrograd — building a neural net from scratch',
+          description: "A from-scratch tour of the autograd engine and gradient descent behind neural networks, built by following Andrej Karpathy&#39;s micrograd video",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/micrograd/";
             },},{
         id: 'social-email',
         title: 'email',
