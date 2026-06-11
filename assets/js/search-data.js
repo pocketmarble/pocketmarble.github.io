@@ -18,7 +18,7 @@ ninja.data = [{
           },
         },{id: "nav-projects",
           title: "projects",
-          description: "Here are the projects that I&#39;ve worked on over the years - some have been for work, and others for fun 😎",
+          description: "A selection of technical projects spanning machine learning and computational research.",
           section: "Navigation",
           handler: () => {
             window.location.href = "/projects/";
@@ -404,54 +404,9 @@ ninja.data = [{
             },},{id: "news-a-simple-inline-announcement-with-markdown-emoji-sparkles-smile",
           title: 'A simple inline announcement with Markdown emoji! :sparkles: :smile:',
           description: "",
-          section: "News",},{id: "projects-reverse-ratatouille",
-          title: 'Reverse Ratatouille',
-          description: "Applying CPA (Corrected Projections Algorithm), an algorithm inspired by the rat corticothalamic circuit, to various problems",
-          section: "Projects",handler: () => {
-              window.location.href = "/projects/1_project/";
-            },},{id: "projects-web-app-literally",
-          title: 'Web app (literally)',
-          description: "An online application for teaching med students about patch clamp electrophysiology, a technique for mapping neuron webs",
-          section: "Projects",handler: () => {
-              window.location.href = "/projects/2_project/";
-            },},{id: "projects-automating-the-bench",
-          title: 'Automating the bench',
-          description: "A software framework allowing non-coders to create and execute wet lab protocols on a robot",
-          section: "Projects",handler: () => {
-              window.location.href = "/projects/3_project/";
-            },},{id: "projects-studying-excit",
-          title: 'Studying ExCIT',
-          description: "An in-vitro model of extracorporeal circulation induced trained immunity (ExCIT) and an assay for its clinical detection",
-          section: "Projects",handler: () => {
-              window.location.href = "/projects/4_project/";
-            },},{id: "projects-turbidostat",
-          title: 'Turbidostat',
-          description: "An open-source 3D printed device to automate yeast culture",
-          section: "Projects",handler: () => {
-              window.location.href = "/projects/5_project/";
-            },},{id: "projects-microscope-incubator",
-          title: 'Microscope incubator',
-          description: "an enclosure to maintain a suitable environment for eukaryotic cells during long-duration imaging",
-          section: "Projects",handler: () => {
-              window.location.href = "/projects/6_project/";
-            },},{id: "projects-transformer-ex-nihilo",
-          title: 'Transformer ex-nihilo',
-          description: "What better way to learn about transformers than to build one from the ground up?",
-          section: "Projects",handler: () => {
-              window.location.href = "/projects/7_project/";
-            },},{id: "projects-consultantgpt",
-          title: 'ConsultantGPT',
-          description: "A fun, light-hearted challenge issued by my best friend that I couldn&#39;t automate his job, rendering him completely obsolete",
-          section: "Projects",handler: () => {
-              window.location.href = "/projects/8_project/";
-            },},{id: "projects-project-9",
-          title: 'project 9',
-          description: "another project with an image 🎉",
-          section: "Projects",handler: () => {
-              window.location.href = "/projects/9_project/";
-            },},{id: "projects-micrograd-building-a-neural-net-from-scratch",
-          title: 'micrograd — building a neural net from scratch',
-          description: "A from-scratch tour of the autograd engine and gradient descent behind neural networks, built by following Andrej Karpathy&#39;s micrograd video",
+          section: "News",},{id: "projects-building-a-neural-network-from-scratch",
+          title: 'building a neural network from scratch',
+          description: "A from-scratch tour of the fundamentals of machine learning",
           section: "Projects",handler: () => {
               window.location.href = "/projects/micrograd/";
             },},{
