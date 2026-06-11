@@ -1,4 +1,5 @@
 ---
+published: false
 layout: page
 title: Microscope incubator
 description: an enclosure to maintain a suitable environment for eukaryotic cells during long-duration imaging

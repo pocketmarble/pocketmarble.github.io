@@ -1,4 +1,5 @@
 ---
+published: false
 layout: page
 title: Reverse Ratatouille
 description: Applying CPA (Corrected Projections Algorithm), an algorithm inspired by the rat corticothalamic circuit, to various problems

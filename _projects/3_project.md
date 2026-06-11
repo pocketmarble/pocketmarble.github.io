@@ -1,4 +1,5 @@
 ---
+published: false
 layout: page
 title: Automating the bench
 description: A software framework allowing non-coders to create and execute wet lab protocols on a robot

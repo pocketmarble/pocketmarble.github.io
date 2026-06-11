@@ -1,4 +1,5 @@
 ---
+published: false
 layout: page
 title: ConsultantGPT
 description: A fun, light-hearted challenge issued by my best friend that I couldn't automate his job, rendering him completely obsolete

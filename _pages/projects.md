@@ -2,7 +2,7 @@
 layout: page
 title: projects
 permalink: /projects/
-description: Here are the projects that I've worked on over the years - some have been for work, and others for fun 😎
+description: A selection of technical projects spanning machine learning and computational research.
 nav: true
 nav_order: 3
 display_categories: [work, fun]
