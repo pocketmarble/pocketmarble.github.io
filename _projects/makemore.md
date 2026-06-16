@@ -7,14 +7,14 @@ importance: 2
 category: work
 ---
 
-This project is my hands-on implementation of Andrej Karpathy's [makemore](https://github.com/karpathy/makemore), following his [walkthrough](https://www.youtube.com/watch?v=PaCmpygFfXo). The goal is to build a character-level language model that, trained on a list of 32,033 real US names, learns to generate new ones that *sound* like names. I start from raw bigram frequency counts and then rebuild the exact same model as a single-layer neural network trained with gradient descent — showing that the two approaches converge to the same thing.
+This project is my hands-on implementation of [makemore](https://github.com/karpathy/makemore), following Andrej Karpathy's [walkthrough](https://www.youtube.com/watch?v=PaCmpygFfXo). The goal is to build a character-level language model that, trained on a list of 32,033 real US names, learns to generate new ones that *sound* like names. I start from raw bigram frequency counts and then rebuild the exact same model as a single-layer neural network trained with gradient descent — showing that the two approaches converge to the same result.
 
 The model below is the **bigram model** from the notebook, running entirely in your browser. It looks at the current character and samples the next one from the probability distribution it learned from real names. Click the button to dream up a few:
 
 <div class="row justify-content-sm-center mt-3 mb-4">
   <div class="col-sm-10 text-center">
     <button id="makemore-btn" class="btn btn-primary">✨ generate ..."names"</button>
-    <pre id="makemore-output" style="margin-top: 1rem; min-height: 7.5rem; font-size: 1.1rem; line-height: 1.5;"></pre>
+    <pre id="makemore-output" style="margin-top: 1rem; min-height: 7.5rem; font-size: 1.1rem; line-height: 1.5;">click the button to dream up some names…</pre>
   </div>
 </div>
 
@@ -61,13 +61,13 @@ The model below is the **bigram model** from the notebook, running entirely in y
 })();
 </script>
 
-The notebook below walks through the whole build, each piece from first principles:
+The notebook below walks through the whole build, each piece from first principles, implemented in pytorch:
 
-- **Bigram counts** — tallying every adjacent pair of characters across all names into a 27×27 table.
-- **From counts to probabilities** — normalizing each row so it sums to 1, then sampling with `torch.multinomial` to generate names.
-- **Loss** — the average negative log-likelihood, a single number measuring how well the model predicts the real names.
-- **The neural-network version** — one-hot encoding the inputs, a single 27×27 weight matrix, softmax, and gradient descent.
-- **The punchline** — the trained weight matrix converges to (the log of) the count table. The two models are mathematically the same, but the neural-network framing scales to far richer models where a raw count table never could.
+- **Bigram counts** — tallying every adjacent pair of characters across all names into a [27,27] tensor
+- **From counts to probabilities** — normalizing each row so it sums to 1, then sampling with `torch.multinomial` to generate names
+- **Loss** — the average negative log-likelihood, a single number measuring how well the model predicts the real names
+- **The neural-network version** — one-hot encoding the inputs, a single 27×27 weight matrix, softmax, and gradient descent
+- **The punchline** — the trained weight matrix converges to (the log of) the count table. The two models are mathematically the same, but the neural-network framing scales to far richer models
 
 The 27×27 bigram frequency table the model learns, visualized — brighter cells are more common transitions:
 

@@ -16,7 +16,7 @@ The model below is the **trained MLP** from the notebook (10-dimensional embeddi
 <div class="row justify-content-sm-center mt-3 mb-4">
   <div class="col-sm-10 text-center">
     <button id="mlp-btn" class="btn btn-primary" disabled>loading model…</button>
-    <pre id="mlp-output" style="margin-top: 1rem; min-height: 7.5rem; font-size: 1.1rem; line-height: 1.5;"></pre>
+    <pre id="mlp-output" style="margin-top: 1rem; min-height: 7.5rem; font-size: 1.1rem; line-height: 1.5;">click the button to dream up some names…</pre>
   </div>
 </div>
 
