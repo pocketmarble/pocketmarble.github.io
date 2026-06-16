@@ -404,7 +404,17 @@ ninja.data = [{
             },},{id: "news-a-simple-inline-announcement-with-markdown-emoji-sparkles-smile",
           title: 'A simple inline announcement with Markdown emoji! :sparkles: :smile:',
           description: "",
-          section: "News",},{id: "projects-building-a-neural-network-from-scratch",
+          section: "News",},{id: "projects-building-a-bigram-language-model-from-scratch",
+          title: 'building a bigram language model from scratch',
+          description: "Teaching a tiny model to dream up new names, one character at a time",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/makemore/";
+            },},{id: "projects-building-an-mlp-language-model-from-scratch",
+          title: 'building an MLP language model from scratch',
+          description: "A neural network that learns to dream up names, three characters at a time",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/makemore_mlp/";
+            },},{id: "projects-building-a-neural-network-from-scratch",
           title: 'building a neural network from scratch',
           description: "A from-scratch tour of the fundamentals of machine learning",
           section: "Projects",handler: () => {
