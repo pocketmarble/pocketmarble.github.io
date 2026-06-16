@@ -406,12 +406,12 @@ ninja.data = [{
           description: "",
           section: "News",},{id: "projects-building-a-bigram-language-model-from-scratch",
           title: 'building a bigram language model from scratch',
-          description: "Teaching a tiny model to dream up new names, one character at a time",
+          description: "Teaching a tiny model to generate names, one character at a time",
           section: "Projects",handler: () => {
               window.location.href = "/projects/makemore/";
             },},{id: "projects-building-an-mlp-language-model-from-scratch",
           title: 'building an MLP language model from scratch',
-          description: "A neural network that learns to dream up names, three characters at a time",
+          description: "A neural network that learns to generate names, three characters at a time",
           section: "Projects",handler: () => {
               window.location.href = "/projects/makemore_mlp/";
             },},{id: "projects-building-a-neural-network-from-scratch",
@@ -454,30 +454,4 @@ ninja.data = [{
         handler: () => {
           window.open("https://scholar.google.com/citations?user=JuGmUW4AAAAJ", "_blank");
         },
-      },{
-      id: 'light-theme',
-      title: 'Change theme to light',
-      description: 'Change the theme of the site to Light',
-      section: 'Theme',
-      handler: () => {
-        setThemeSetting("light");
-      },
-    },
-    {
-      id: 'dark-theme',
-      title: 'Change theme to dark',
-      description: 'Change the theme of the site to Dark',
-      section: 'Theme',
-      handler: () => {
-        setThemeSetting("dark");
-      },
-    },
-    {
-      id: 'system-theme',
-      title: 'Use system default theme',
-      description: 'Change the theme of the site to System Default',
-      section: 'Theme',
-      handler: () => {
-        setThemeSetting("system");
-      },
-    },];
+      },];
