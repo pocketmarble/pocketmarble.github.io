@@ -1,13 +1,13 @@
 ---
 layout: page
 title: building an MLP language model from scratch
-description: A neural network that learns to dream up names, three characters at a time
+description: A neural network that learns to generate names, three characters at a time
 img: assets/img/makemore_mlp.png
 importance: 3
 category: work
 ---
 
-This is part 2 of [makemore](https://github.com/karpathy/makemore), following Andrej Karpathy's [walkthrough](https://www.youtube.com/watch?v=TCH_1BHY58I). Where [part 1]({{ '/projects/makemore/' | relative_url }}) showed the limits of a bigram model — it can only ever look one character back — this project implements the multi-layer perceptron (MLP) language model described by [Bengio et al. (2003)](https://www.jmlr.org/papers/volume3/bengio03a/bengio03a.pdf), adapted to the character level for continuity with part 1.
+This is part 2 of [makemore](https://github.com/karpathy/makemore), following Andrej Karpathy's [walkthrough](https://www.youtube.com/watch?v=TCH_1BHY58I). In [part 1]({{ '/projects/makemore/' | relative_url }}) I built a bigram language model and demonstrated its quality limitations from its constraint of being able to look at most only one character back. This project implements the multi-layer perceptron (MLP) language model described by [Bengio et al. (2003)](https://www.jmlr.org/papers/volume3/bengio03a/bengio03a.pdf), adapted to the character level for continuity with part 1.
 
 Instead of a lookup table of counts, each character is mapped into a learned embedding space, a block of 3 characters of context is fed through a hidden layer, and the network predicts the next character. Trained with gradient descent, it reaches a loss of ~2.1 — comfortably better than the bigram model — and generates names that genuinely look plausible.
 
@@ -84,7 +84,7 @@ The model below is the **trained MLP** from the notebook (10-dimensional embeddi
     .then(data => {
       M = data;
       btn.disabled = false;
-      btn.textContent = '✨ generate ..."names"';
+      btn.textContent = 'generate names';
     })
     .catch(() => { btn.textContent = 'failed to load model'; });
 

@@ -1,3 +1,181 @@
 <div class="publications">
-  {% bibliography --group_by none --query @*[selected=true]* %}
+  <div class="pub-slider">
+    {% bibliography --group_by none %}
+    <div class="pub-slider-controls" aria-hidden="true">
+      <button class="pub-slider-arrow pub-slider-prev" type="button" aria-label="Previous publication">
+        <i class="ti ti-chevron-left"></i>
+      </button>
+      <div class="pub-slider-dots"></div>
+      <button class="pub-slider-arrow pub-slider-next" type="button" aria-label="Next publication">
+        <i class="ti ti-chevron-right"></i>
+      </button>
+    </div>
+  </div>
 </div>
+
+<style>
+  .pub-slider {
+    position: relative;
+  }
+
+  /* Slides stack on top of each other; JS sets the track height. */
+  .pub-slider--active ol.bibliography {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .pub-slider--active ol.bibliography > li {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  .pub-slider--active ol.bibliography > li.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  /* Controls hidden until JS activates the slider (avoids a flash of dead buttons). */
+  .pub-slider-controls {
+    display: none;
+  }
+
+  .pub-slider--active .pub-slider-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .pub-slider-arrow {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: var(--global-text-color-light);
+    transition: color 0.2s ease;
+  }
+
+  .pub-slider-arrow:hover {
+    color: var(--global-theme-color);
+  }
+
+  .pub-slider-dots {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .pub-slider-dot {
+    width: 9px;
+    height: 9px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: var(--global-divider-color);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .pub-slider-dot:hover {
+    background-color: var(--global-text-color-light);
+  }
+
+  .pub-slider-dot.is-active {
+    background-color: var(--global-theme-color);
+    transform: scale(1.25);
+  }
+</style>
+
+<script>
+  (function () {
+    function initPubSlider(slider) {
+      var list = slider.querySelector("ol.bibliography");
+      if (!list) return;
+      var slides = Array.prototype.slice.call(list.children);
+      if (slides.length <= 1) return; // nothing to revolve through
+
+      slider.classList.add("pub-slider--active");
+
+      var dotsWrap = slider.querySelector(".pub-slider-dots");
+      var current = 0;
+      var intervalMs = 6000;
+      var timer = null;
+
+      var dots = slides.map(function (_, i) {
+        var dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "pub-slider-dot";
+        dot.setAttribute("aria-label", "Go to publication " + (i + 1));
+        dot.addEventListener("click", function () {
+          goTo(i);
+          restart();
+        });
+        dotsWrap.appendChild(dot);
+        return dot;
+      });
+
+      function setHeight() {
+        var max = 0;
+        slides.forEach(function (s) {
+          // Measure natural height even while hidden.
+          var prev = s.style.visibility;
+          s.style.visibility = "hidden";
+          max = Math.max(max, s.offsetHeight);
+          s.style.visibility = prev;
+        });
+        list.style.height = max + "px";
+      }
+
+      function show(i) {
+        slides.forEach(function (s, idx) {
+          s.classList.toggle("is-active", idx === i);
+        });
+        dots.forEach(function (d, idx) {
+          d.classList.toggle("is-active", idx === i);
+        });
+        current = i;
+      }
+
+      function goTo(i) {
+        show((i + slides.length) % slides.length);
+      }
+      function next() { goTo(current + 1); }
+      function prev() { goTo(current - 1); }
+      function start() { timer = window.setInterval(next, intervalMs); }
+      function stop() { window.clearInterval(timer); }
+      function restart() { stop(); start(); }
+
+      slider.querySelector(".pub-slider-next").addEventListener("click", function () { next(); restart(); });
+      slider.querySelector(".pub-slider-prev").addEventListener("click", function () { prev(); restart(); });
+      slider.addEventListener("mouseenter", stop);
+      slider.addEventListener("mouseleave", start);
+
+      show(0);
+      setHeight();
+      window.addEventListener("resize", setHeight);
+      window.addEventListener("load", setHeight);
+      // Recompute once any lazy images finish loading.
+      slider.querySelectorAll("img").forEach(function (img) {
+        if (!img.complete) img.addEventListener("load", setHeight);
+      });
+
+      start();
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll(".pub-slider").forEach(initPubSlider);
+    });
+  })();
+</script>
