@@ -7,7 +7,7 @@ importance: 2
 category: work
 ---
 
-This project is my hands-on implementation of [makemore](https://github.com/karpathy/makemore), following Andrej Karpathy's [walkthrough](https://www.youtube.com/watch?v=PaCmpygFfXo). The goal is to build a character-level language model that, trained on a list of 32,033 real US names, learns to generate new ones that *sound* like names. I start from raw bigram frequency counts and then rebuild the exact same model as a single-layer neural network trained with gradient descent — showing that the two approaches converge to the same result.
+This project is my hands-on implementation of [makemore](https://github.com/karpathy/makemore), following the [lecture](https://www.youtube.com/watch?v=PaCmpygFfXo) by Andrej Karpathy. The goal is to build a character-level language model that, trained on a list of 32,033 real US names, learns to generate new ones that *sound* like names. I start from raw bigram frequency counts and then rebuild the exact same model as a single-layer neural network trained with gradient descent — showing that the two approaches converge to the same result.
 
 The model below is the **bigram model** from the notebook, running entirely in your browser. It looks at the current character and samples the next one from the probability distribution it learned from real names. It isn't the most... convincing, but it's trying. Click the button to see the poor thing's output.
 
