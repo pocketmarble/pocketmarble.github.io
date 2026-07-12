@@ -404,14 +404,24 @@ ninja.data = [{
             },},{id: "news-a-simple-inline-announcement-with-markdown-emoji-sparkles-smile",
           title: 'A simple inline announcement with Markdown emoji! :sparkles: :smile:',
           description: "",
-          section: "News",},{id: "projects-building-a-bigram-language-model-from-scratch",
-          title: 'building a bigram language model from scratch',
-          description: "Teaching a tiny model to generate names, one character at a time",
+          section: "News",},{id: "projects-i-a-statistics-based-bigram-language-model",
+          title: 'I. a statistics-based bigram language model',
+          description: "building a language model from scratch",
           section: "Projects",handler: () => {
               window.location.href = "/projects/makemore/";
-            },},{id: "projects-building-an-mlp-language-model-from-scratch",
-          title: 'building an MLP language model from scratch',
-          description: "A neural network that learns to generate names, three characters at a time",
+            },},{id: "projects-iv-backprop-by-hand",
+          title: 'IV. backprop, by hand',
+          description: "Deriving the backward pass of an entire MLP without autograd, then collapsing it",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/makemore_backprop/";
+            },},{id: "projects-iii-the-art-of-training",
+          title: 'III. the art of training',
+          description: "Diagnosing dead neurons, taming activations, and adding batch normalization",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/makemore_batchnorm/";
+            },},{id: "projects-ii-an-mlp-bigram-language-model",
+          title: 'II. an MLP bigram language model',
+          description: "upgrading to a neural network with a context window of 3 characters",
           section: "Projects",handler: () => {
               window.location.href = "/projects/makemore_mlp/";
             },},{id: "projects-building-a-neural-network-from-scratch",

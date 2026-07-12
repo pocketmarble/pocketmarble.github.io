@@ -1,0 +1,110 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <title> III. the art of training | Austin Meadows </title> <meta name="author" content="Austin Meadows"> <meta name="description" content="Diagnosing dead neurons, taming activations, and adding batch normalization"> <meta name="keywords" content="jekyll, jekyll-theme, academic-website, portfolio-website"> <link rel="stylesheet" href="/assets/css/bootstrap.min.css?a4b3f509e79c54a512b890d73235ef04"> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/css/mdb.min.css" integrity="sha256-jpjYvU3G3N6nrrBwXJoVEYI/0zw8htfFnhT9ljN3JJw=" crossorigin="anonymous"> <link defer rel="stylesheet" href="/assets/css/academicons.min.css?f0b7046b84e425c55f3463ac249818f5"> <link defer rel="stylesheet" href="/assets/css/scholar-icons.css?62b2ac103a88034e6882a5be5f3e2772"> <link defer rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons&amp;display=swap"> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-github.css?591dab5a4e56573bf4ef7fd332894c99" media="" id="highlight_theme_light"> <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22&gt;&lt;text%20y=%22.9em%22%20font-size=%2290%22&gt;%E2%9A%9B%EF%B8%8F&lt;/text&gt;&lt;/svg&gt;"> <link rel="stylesheet" href="/assets/css/main.css?d41d8cd98f00b204e9800998ecf8427e"> <link rel="canonical" href="https://pocketmarble.github.io/projects/makemore_batchnorm/"> </head> <body class="fixed-top-nav "> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top" role="navigation"> <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"> <span class="font-weight-bold">Austin</span> Meadows </a> <button class="navbar-toggler collapsed ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse text-right" id="navbarNav"> <ul class="navbar-nav ml-auto flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/">about </a> </li> <li class="nav-item "> <a class="nav-link" href="/publications/">publications </a> </li> <li class="nav-item active"> <a class="nav-link" href="/projects/">projects <span class="sr-only">(current)</span> </a> </li> <li class="nav-item "> <a class="nav-link" href="/cv/">resume </a> </li> <li class="nav-item"> <button id="search-toggle" title="Search" onclick="openSearchModal()"> <span class="nav-link">ctrl k <i class="ti ti-search"></i></span> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5" role="main"> <div class="post"> <header class="post-header"> <h1 class="post-title">III. the art of training</h1> <p class="post-description">Diagnosing dead neurons, taming activations, and adding batch normalization</p> </header> <article> <p>This is part 3 of <a href="https://github.com/karpathy/makemore" rel="external nofollow noopener" target="_blank">makemore</a>, following the <a href="https://www.youtube.com/watch?v=P6sfmUTpUmc" rel="external nofollow noopener" target="_blank">lecture</a> by Andrej Karpathy. In <a href="/projects/makemore_mlp/">part 2</a> I built the multi-layer perceptron that generates names three characters at a time. The model worked — but it was quietly fighting itself at startup. This project looks under the hood at what happens in the very first steps of training: why a carelessly initialized network wastes time (or fails to train entirely), and how the fixes for it turn out to be the very tools that make deep learning possible.</p> <p>Two problems hide at initialization. The output logits are too large, so the model starts out <em>confidently wrong</em> and burns the first hundreds of steps just deflating that false confidence. Worse, the <code class="language-plaintext highlighter-rouge">tanh</code> hidden activations are saturated — pinned at −1 or +1, where the gradient <code class="language-plaintext highlighter-rouge">1 − h²</code> vanishes and the neuron stops learning entirely. The fixes are a principled weight scaling (<a href="https://arxiv.org/abs/1502.01852" rel="external nofollow noopener" target="_blank">Kaiming initialization</a>) and, ultimately, <a href="https://arxiv.org/pdf/1502.03167" rel="external nofollow noopener" target="_blank">batch normalization</a> — the technique that made training deep networks practical.</p> <p>The notebook below works through the diagnosis and the fixes from first principles:</p> <ul> <li> <strong>A loss that starts too high</strong> — the untrained model should sit near <code class="language-plaintext highlighter-rouge">-log(1/27) ≈ 3.29</code>, but it starts much higher because the initial logits are large and arbitrary. Squashing the output weights toward zero removes the confidently-wrong opening.</li> <li> <strong>Saturated <code class="language-plaintext highlighter-rouge">tanh</code> and dead neurons</strong> — visualizing the hidden activations shows most of them jammed against ±1, where the gradient vanishes. A neuron whose inputs are all saturated can never learn.</li> <li> <strong>Kaiming initialization</strong> — scaling the weights by <code class="language-plaintext highlighter-rouge">gain / √(fan-in)</code> keeps the variance of the pre-activations stable through the layer, with a <code class="language-plaintext highlighter-rouge">5/3</code> gain to compensate for the shape of <code class="language-plaintext highlighter-rouge">tanh</code>.</li> <li> <strong>Batch normalization</strong> — normalizing each batch’s pre-activations during the forward pass, then learning a scale (<code class="language-plaintext highlighter-rouge">γ</code>) and shift (<code class="language-plaintext highlighter-rouge">β</code>). It keeps activations healthy without hand-tuning every weight matrix — the trick that makes truly deep networks trainable.</li> <li> <strong>Inference after batch norm</strong> — maintaining running estimates of the mean and variance during training so the model can still process a single example at test time.</li> </ul> <p>The one-hidden-layer model above is shallow enough that a sloppy initialization only nudges the final loss. To feel why initialization actually <em>matters</em>, you need depth. Below is a <strong>5-hidden-layer</strong> <code class="language-plaintext highlighter-rouge">tanh</code> network — the same architecture, just stacked — measured at initialization (and over its first 1000 training steps) as a single knob is turned: the <strong>gain</strong> applied to each layer’s weights.</p> <p>Drag the slider and watch four panels move together — the top row shows the network’s signals at initialization, the bottom row how large a step those signals translate into:</p> <ul> <li> <strong>activations</strong> — the <code class="language-plaintext highlighter-rouge">tanh</code> outputs of each layer. Too little gain and they collapse toward 0 (σ shrinks layer by layer); too much and they saturate at ±1.</li> <li> <strong>activation gradients</strong> — the gradient flowing back through each layer; it vanishes or explodes in a deep neural network when the activations are unhealthy, making training impossible.</li> <li> <strong>update:data ratio</strong> — <code class="language-plaintext highlighter-rouge">log₁₀( (lr·∇).std / weight.std )</code> per weight matrix over the first 1000 training steps; the dashed line marks the <code class="language-plaintext highlighter-rouge">-3</code> (≈1e-3) sweet spot.</li> <li> <strong>grad:data ratio</strong> — the same ratio at initialization, one bar per weight matrix. The <strong>output layer (<code class="language-plaintext highlighter-rouge">out</code>) towers over the <code class="language-plaintext highlighter-rouge">-3</code> line</strong>: it was deliberately shrunk (×0.1) to start unconfident, so one global learning rate moves it far faster than its size — the case for per-parameter learning rates.</li> </ul> <p>Colors map to the layers via the legend under each widget (<code class="language-plaintext highlighter-rouge">emb</code>, <code class="language-plaintext highlighter-rouge">L1</code>–<code class="language-plaintext highlighter-rouge">L5</code>, <code class="language-plaintext highlighter-rouge">out</code>).</p> <div class="initviz" data-net="hand"> <div class="iv-controls"> <span class="iv-name">by-hand initialization</span> <label class="iv-label">gain <input type="range" class="iv-gain"></label> <span class="iv-gainval"></span> </div> <div class="iv-grid"> <canvas class="iv-canvas iv-act"></canvas> <canvas class="iv-canvas iv-grad"></canvas> <canvas class="iv-canvas iv-ud"></canvas> <canvas class="iv-canvas iv-gd"></canvas> </div> <div class="iv-legend"></div> </div> <p>Notice how <strong>every</strong> metric lurches as you scrub: the activations vanish then saturate, the gradients follow, and the update ratios drift off the <code class="language-plaintext highlighter-rouge">-3</code> line. Getting a deep network to train this way means hand-balancing <code class="language-plaintext highlighter-rouge">gain / √(fan-in)</code> for every layer — and re-balancing whenever the architecture changes. It’s intractable.</p> <p>Now the same network with a <strong>batch-normalization</strong> layer after each linear layer. Drag the same slider:</p> <div class="initviz" data-net="bn"> <div class="iv-controls"> <span class="iv-name">with batch normalization</span> <label class="iv-label">gain <input type="range" class="iv-gain"></label> <span class="iv-gainval"></span> </div> <div class="iv-grid"> <canvas class="iv-canvas iv-act"></canvas> <canvas class="iv-canvas iv-grad"></canvas> <canvas class="iv-canvas iv-ud"></canvas> <canvas class="iv-canvas iv-gd"></canvas> </div> <div class="iv-legend"></div> </div> <p>The activations barely move. σ and saturation remain consistent across the <em>entire</em> gain range, and the gradients and update ratios stay put with them. <strong>Batch norm decouples the health of the network from the precise scale of the initialization, which is exactly what makes training deep networks practical.</strong></p> <style>.initviz{border:1px solid #e3e3e3;border-radius:8px;padding:12px 14px;margin:1.2rem 0}.initviz .iv-controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px}.initviz .iv-name{font-weight:600}.initviz .iv-label{display:flex;align-items:center}.initviz .iv-gain{width:170px;max-width:45vw;margin-left:6px}.initviz .iv-gainval{font-family:ui-monospace,monospace;min-width:2.4em}.initviz .iv-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.initviz .iv-canvas{width:100%;aspect-ratio:1.9;display:block}.initviz .iv-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;font:11px ui-monospace,SFMono-Regular,Menlo,monospace;color:#555}.initviz .iv-legend span{display:inline-flex;align-items:center;gap:4px}.initviz .iv-legend i{width:11px;height:11px;border-radius:2px;display:inline-block}</style> <script>
+(function () {
+  const PAL = ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2'];
+  const ENT = ['emb', 'L1', 'L2', 'L3', 'L4', 'L5', 'out'];
+
+  function fmt(v) {
+    if (v == null) return '—';
+    const a = Math.abs(v);
+    if (a !== 0 && (a < 0.01 || a >= 1000)) return v.toExponential(0);
+    return (Math.round(v * 100) / 100).toString();
+  }
+
+  // hi-DPI: size the backing buffer to CSS pixels × devicePixelRatio so lines stay crisp
+  function prep(cv) {
+    const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+    if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) {
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    }
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    return { ctx, W, H };
+  }
+  function frame(ctx, m, W, H) { ctx.strokeStyle = '#ddd'; ctx.lineWidth = 1; ctx.strokeRect(m.l, m.t, W - m.l - m.r, H - m.t - m.b); }
+  function title(ctx, m, t) { ctx.fillStyle = '#333'; ctx.font = '10px sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(t, m.l, 1); }
+  function ylab(ctx, m, py, lo, hi) {
+    ctx.fillStyle = '#999'; ctx.font = '9px ui-monospace, monospace'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    ctx.fillText(fmt(hi), m.l - 3, py(hi)); ctx.fillText(fmt(lo), m.l - 3, py(lo));
+  }
+  function yticks(ctx, m, W, py, lo, hi, step) {
+    ctx.font = '9px ui-monospace, monospace'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) {
+      const Y = py(v);
+      ctx.strokeStyle = '#eee'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(m.l, Y); ctx.lineTo(W - m.r, Y); ctx.stroke();
+      ctx.fillStyle = '#999'; ctx.fillText(fmt(v), m.l - 3, Y);
+    }
+  }
+
+  function lineChart(cv, xs, series, colors, opts) {
+    const r = prep(cv), ctx = r.ctx, W = r.W, H = r.H, m = { l: 34, r: 6, t: 14, b: 14 };
+    const x0 = xs[0], x1 = xs[xs.length - 1], px = x => m.l + (x - x0) / (x1 - x0) * (W - m.l - m.r);
+    let lo, hi;
+    if (opts.yRange) { lo = opts.yRange[0]; hi = opts.yRange[1]; }
+    else { hi = 0; for (const s of series) for (const v of s) if (v != null && v > hi) hi = v; lo = 0; hi = hi > 0 ? hi * 1.08 : 1; }
+    const py = y => (H - m.b) - (y - lo) / (hi - lo) * (H - m.t - m.b);
+    frame(ctx, m, W, H);
+    if (opts.ytickStep) yticks(ctx, m, W, py, lo, hi, opts.ytickStep); else ylab(ctx, m, py, lo, hi);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText(fmt(x0), px(x0), H - m.b + 2); ctx.fillText(fmt(x1), px(x1), H - m.b + 2);
+    (opts.hlines || []).forEach(h => { ctx.strokeStyle = h.color; ctx.setLineDash(h.dash || []); ctx.beginPath(); ctx.moveTo(px(x0), py(h.y)); ctx.lineTo(px(x1), py(h.y)); ctx.stroke(); ctx.setLineDash([]); });
+    series.forEach((s, si) => {
+      ctx.strokeStyle = colors[si]; ctx.lineWidth = 1.3; ctx.beginPath(); let st = false;
+      for (let i = 0; i < xs.length; i++) { const v = s[i]; if (v == null) { st = false; continue; } const X = px(xs[i]), Y = py(Math.max(lo, Math.min(hi, v))); if (!st) { ctx.moveTo(X, Y); st = true; } else ctx.lineTo(X, Y); }
+      ctx.stroke();
+    });
+    title(ctx, m, opts.title || '');
+  }
+
+  function barChart(cv, labels, vals, colors, opts) {
+    const r = prep(cv), ctx = r.ctx, W = r.W, H = r.H, m = { l: 30, r: 6, t: 14, b: 20 };
+    const lo = opts.yRange[0], hi = opts.yRange[1], n = labels.length, plotW = W - m.l - m.r;
+    const py = y => (H - m.b) - (y - lo) / (hi - lo) * (H - m.t - m.b);
+    frame(ctx, m, W, H); yticks(ctx, m, W, py, lo, hi, opts.ytickStep || 1);
+    if (opts.refY != null) { ctx.strokeStyle = '#000'; ctx.setLineDash([4, 3]); ctx.beginPath(); ctx.moveTo(m.l, py(opts.refY)); ctx.lineTo(W - m.r, py(opts.refY)); ctx.stroke(); ctx.setLineDash([]); }
+    const bw = plotW / n * 0.6, base = py(lo);
+    for (let i = 0; i < n; i++) {
+      const v = vals[i], cx = m.l + (i + 0.5) * plotW / n;
+      if (v != null && v > 0) {
+        const top = py(Math.max(lo, Math.min(hi, Math.log10(v))));
+        ctx.fillStyle = colors[i]; ctx.fillRect(cx - bw / 2, Math.min(top, base), bw, Math.abs(base - top));
+      }
+      ctx.fillStyle = '#666'; ctx.font = '8px ui-monospace, monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      ctx.fillText(labels[i], cx, H - m.b + 2);
+    }
+    title(ctx, m, opts.title || '');
+  }
+
+  function makeWidget(root, key, D) {
+    const F = D[key], q = s => root.querySelector(s);
+    const slider = q('.iv-gain'), gv = q('.iv-gainval');
+    const cAct = q('.iv-act'), cGrad = q('.iv-grad'), cUd = q('.iv-ud'), cGd = q('.iv-gd');
+    q('.iv-legend').innerHTML = ENT.map((e, i) => '<span><i style="background:' + PAL[i] + '"></i>' + e + '</span>').join('');
+    slider.min = 0; slider.max = D.gains.length - 1; slider.step = 1;
+    slider.value = Math.round((5 / 3 - D.gains[0]) / (D.gains[1] - D.gains[0]));
+    const colT = PAL.slice(1, 6), colW = PAL.slice(0, 7);
+    function update() {
+      const gi = +slider.value;
+      gv.textContent = D.gains[gi].toFixed(1);
+      lineChart(cAct, D.x.act, F.act[gi], colT, { title: 'activations' });
+      lineChart(cGrad, D.x.actgrad, F.actgrad[gi], colT, { title: 'activation gradients' });
+      lineChart(cUd, D.udSteps, F.ud[gi], colW, { title: 'update:data over training (log₁₀)', yRange: [-6, 0.5], hlines: [{ y: -3, color: '#000', dash: [4, 3] }], ytickStep: 2 });
+      barChart(cGd, ENT, F.ratio[gi], colW, { title: 'grad:data ratio (log₁₀)', yRange: [-4, 1], refY: -3 });
+    }
+    root._update = update;
+    slider.addEventListener('input', update);
+    update();
+  }
+
+  fetch("/assets/json/makemore_initviz.json")
+    .then(r => r.json())
+    .then(D => {
+      const roots = Array.prototype.slice.call(document.querySelectorAll('.initviz'));
+      roots.forEach(root => makeWidget(root, root.dataset.net, D));
+      let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => roots.forEach(r => r._update && r._update()), 120); });
+    })
+    .catch(e => console.error('initviz load failed', e));
+})();
+</script> <div class="jupyter-notebook" style="position: relative; width: 100%; margin: 0 auto;"> <div class="jupyter-notebook-iframe-container"> <iframe src="/assets/jupyter/makemore_batchnorm.ipynb.html" style="position: absolute; top: 0; left: 0; border-style: none;" width="100%" height="100%" onload="this.parentElement.style.paddingBottom = (this.contentWindow.document.documentElement.scrollHeight + 10) + 'px'"></iframe> </div> </div> </article> </div> </div> <footer class="fixed-bottom" role="contentinfo"> <div class="container mt-0"> © Copyright 2026 Austin Meadows. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. Last updated: July 12, 2026. </div> </footer> <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> <script src="/assets/js/bootstrap.bundle.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/js/mdb.min.js" integrity="sha256-NdbiivsvWt7VYCt6hYNT3h/th9vSTL4EDWeGs5SN3DA=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@5.0.0/imagesloaded.pkgd.min.js" integrity="sha256-htrLFfZJ6v5udOG+3kNLINIKh2gvoKqwEhHYfTTMICc=" crossorigin="anonymous"></script> <script defer src="/assets/js/masonry.js?a0db7e5d5c70cc3252b3138b0c91dcaf" type="text/javascript"></script> <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script> <script defer src="/assets/js/zoom.js?85ddb88934d28b74e78031fd54cf8308"></script> <script src="/assets/js/no_defer.js?2781658a0a2b13ed609542042a859126"></script> <script defer src="/assets/js/common.js?7b019706a2024b6ead6f4b32f5121645"></script> <script defer src="/assets/js/copy_code.js?c8a01c11a92744d44b093fc3bda915df" type="text/javascript"></script> <script defer src="/assets/js/jupyter_new_tab.js?d9f17b6adc2311cbabd747f4538bb15f"></script> <script async src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script> <script async src="https://badge.dimensions.ai/badge.js"></script> <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script> <script src="/assets/js/mathjax-setup.js?a5bb4e6a542c546dd929b24b8b236dfd"></script> <script defer src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6" crossorigin="anonymous"></script> <script defer src="/assets/js/progress-bar.js?2f30e0e6801ea8f5036fa66e1ab0a71a" type="text/javascript"></script> <script src="/assets/js/vanilla-back-to-top.min.js?f40d453793ff4f64e238e420181a1d17"></script> <script>
+    addBackToTop();
+  </script> <script type="module" src="/assets/js/search/ninja-keys.min.js?a3446f084dcaecc5f75aa1757d087dcf"></script> <ninja-keys hidebreadcrumbs noautoloadmdicons placeholder="Type to start searching"></ninja-keys> <script src="/assets/js/search-setup.js?6c304f7b1992d4b60f7a07956e52f04a"></script> <script src="/assets/js/search-data.js"></script> <script src="/assets/js/shortcut-key.js?6f508d74becd347268a7f822bca7309d"></script> </body> </html>
