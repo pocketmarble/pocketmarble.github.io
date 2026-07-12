@@ -1,10 +1,10 @@
 ---
 layout: page
-title: building an MLP language model from scratch
-description: A neural network that learns to generate names, three characters at a time
+title: II. an MLP bigram language model 
+description: upgrading to a neural network with a context window of 3 characters
 img: assets/img/makemore_mlp.png
 importance: 3
-category: work
+category: makemore
 ---
 
 This is part 2 of [makemore](https://github.com/karpathy/makemore), following the [lecture](https://www.youtube.com/watch?v=TCH_1BHY58I) by Andrej Karpathy. In [part 1]({{ '/projects/makemore/' | relative_url }}) I built a bigram language model and demonstrated its quality limitations from its constraint of being able to look at most only one character back. This project implements the multi-layer perceptron (MLP) language model described by [Bengio et al. (2003)](https://www.jmlr.org/papers/volume3/bengio03a/bengio03a.pdf), adapted to the character level for continuity with part 1.
@@ -16,7 +16,7 @@ The model below is the **trained MLP** from the notebook (10-dimensional embeddi
 <div class="row justify-content-sm-center mt-3 mb-4">
   <div class="col-sm-10 text-center">
     <button id="mlp-btn" class="btn btn-primary" disabled>loading model…</button>
-    <pre id="mlp-output" style="margin-top: 1rem; min-height: 7.5rem; font-size: 1.1rem; line-height: 1.5;">click the button to dream up some names…</pre>
+    <pre id="mlp-output" style="margin-top: 1rem; min-height: 7.5rem; font-size: 1.1rem; line-height: 1.5;">now with more nameness!</pre>
   </div>
 </div>
 

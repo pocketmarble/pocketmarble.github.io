@@ -1,10 +1,10 @@
 ---
 layout: page
-title: building a bigram language model from scratch
-description: Teaching a tiny model to generate names, one character at a time
+title: I. a statistics-based bigram language model
+description: building a language model from scratch
 img: assets/img/makemore.png
 importance: 2
-category: work
+category: makemore
 ---
 
 This project is my hands-on implementation of [makemore](https://github.com/karpathy/makemore), following the [lecture](https://www.youtube.com/watch?v=PaCmpygFfXo) by Andrej Karpathy. The goal is to build a character-level language model that, trained on a list of 32,033 real US names, learns to generate new ones that *sound* like names. I start from raw bigram frequency counts and then rebuild the exact same model as a single-layer neural network trained with gradient descent — showing that the two approaches converge to the same result.

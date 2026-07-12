@@ -4,7 +4,7 @@ title: building a neural network from scratch
 description: A from-scratch tour of the fundamentals of machine learning
 img: assets/img/decision_boundary.gif
 importance: 1
-category: work
+category: micrograd
 ---
 
 This project is my hands-on implementation of Andrej Karpathy's [micrograd](https://github.com/karpathy/micrograd), a bare-bones engine styled after PyTorch which handles the core functionality of ML models, following his [walkthrough](https://www.youtube.com/watch?v=VMj-3S1tku0). Starting from a single scalar object `Value` that contains data and keeps track of its own gradient and connections, I build up to `Neuron`, `Layer`, and finally `MLP`, a multi-layer perceptron. Forward and reverse passes are manually computed for `Neuron` before being implemented as class methods, eventually composing into a gradient descent loop to train a mock network as a binary classifier on mock data.
