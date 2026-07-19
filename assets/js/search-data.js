@@ -429,6 +429,11 @@ ninja.data = [{
           description: "A from-scratch tour of the fundamentals of machine learning",
           section: "Projects",handler: () => {
               window.location.href = "/projects/micrograd/";
+            },},{id: "projects-a-transformer-from-scratch",
+          title: 'a transformer, from scratch',
+          description: "building a GPT and training it to dream in Plato",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/platoGPT/";
             },},{
         id: 'social-email',
         title: 'email',
