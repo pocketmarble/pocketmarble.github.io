@@ -5,7 +5,7 @@ permalink: /projects/
 description: A selection of technical projects spanning machine learning and computational research.
 nav: true
 nav_order: 3
-display_categories: [micrograd, makemore]
+display_categories: [nanoGPT, makemore, micrograd]
 horizontal: false
 ---
 
