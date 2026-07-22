@@ -7,7 +7,7 @@ importance: 1
 category: nanoGPT
 ---
 
-Following [*Let's build GPT: from scratch*](https://www.youtube.com/watch?v=kCc8FmEb1nY) by Andrej Karpathy. After the [makemore](https://github.com/karpathy/makemore) series built up to an MLP and [backpropagated it by hand]({{ '/projects/makemore_backprop/' | relative_url }}), this project assembles the model everything was pointing at — a **decoder-only transformer**: self-attention, multiple heads, residual connections, layer norm. Then I train it, one character at a time, on the complete dialogues of **Plato**. The aim is to understand the transformer as a model; [the walkthrough below](#the-transformer) builds it from the makemore toolkit and nothing more.
+Following [*Let's build GPT: from scratch*](https://www.youtube.com/watch?v=kCc8FmEb1nY) by Andrej Karpathy. The [makemore](https://github.com/karpathy/makemore) series ended at an MLP that predicts each character from a short, fixed window of the characters before it, [backpropagated by hand]({{ '/projects/makemore_backprop/' | relative_url }}) — and there it hit a wall: only a few characters of memory, and no way to weigh them differently as the surrounding text changes. The **transformer** is built to break both limits at once; this project assembles one from the makemore toolkit and nothing more, then trains it one character at a time on the complete dialogues of **Plato**.
 
 The result is ~10.8M parameters that learn to *dream* in Plato — the cadence of the dialogues, the named speakers, the em-dashes and endless qualifications, all hallucinated character by character. Below, the model does exactly that, forever.
 
@@ -176,11 +176,291 @@ The result is ~10.8M parameters that learn to *dream* in Plato — the cadence o
 
 ## The transformer
 
-**Why it exists.** Before 2017 the strongest sequence models were recurrent — RNNs and LSTMs — which read a sentence one token at a time, folding everything seen so far into a single fixed-size hidden state. Two problems followed. Training can't be parallelized along the sequence (step *t* must wait for step *t*−1), and information from a distant token has to survive a long chain of updates to still sway a prediction — the same gradient-health trouble the [training notebook]({{ '/projects/makemore_batchnorm/' | relative_url }}) fought at initialization, now stretched across time. Attention had already been *bolted onto* these models (Bahdanau et al., 2014) so a decoder could look back at any input position directly; ["Attention Is All You Need"](https://arxiv.org/abs/1706.03762) (Vaswani et al., 2017) took the decisive step of discarding the recurrence and keeping only the attention. The payoff is structural: every position reaches every earlier position in a **single step**, and the whole sequence is processed **in parallel**.
+**From makemore to attention.** Every model in makemore predicted the next character from a fixed, tiny context — the bigram from the one character before it, the MLP from a handful. Plato needs far more: which character comes next can depend on the speaker named forty characters ago, on whether a quotation is still open, on the word being spelled right now — and *which* of those matters changes at every step. Two straightforward fixes each fail. Widen the MLP's context window and its parameter count grows with the window, while it still applies one fixed rule to the whole context no matter what that context contains. Read the text one character at a time with a recurrent network (an RNN or LSTM), squeezing all the past into a single running vector, and you pay twice over: the reading is strictly sequential (character *t* waits for *t*−1), and information from far back must survive a long chain of updates to still count — the gradient trouble [part III]({{ '/projects/makemore_batchnorm/' | relative_url }}) met at initialization, now stretched across the length of the text. What the task actually needs is a layer where every position can look straight at any earlier position and decide *how much* to draw from each according to their contents. That layer is **self-attention**; a deep stack of it is the **transformer** (Vaswani et al., ["Attention Is All You Need"](https://arxiv.org/abs/1706.03762), 2017).
 
-**Self-attention** is the one genuinely new idea beyond makemore. Each token projects its embedding into three vectors — a **query** (*what am I looking for?*), a **key** (*what do I contain?*), and a **value** (*what will I pass on?*). The relevance of token *j* to token *i* is the dot product of *i*'s query with *j*'s key; those scores are divided by $$\sqrt{d_k}$$ to keep them in softmax's sensitive range, softmaxed into weights that sum to one, and used to take a weighted average of the values. Linear layers, dot products, softmax — every piece is already yours from makemore; attention just wires them into a lookup where the tokens themselves decide what to fetch. Two details make it a *language* model: the weights are **masked** so a token attends only backward, never to the future it must predict, and every position is computed at once.
+**Characters and positions, as vectors.** The forward pass begins by turning each character into a vector, exactly as the makemore MLP did: a lookup table gives every character its own learned vector. That fixes *what* each character is but says nothing about *where* it sits — the table hands back the same vector for `a` wherever `a` occurs, and every layer that follows works on what a vector *contains*, never on where it happens to fall in the sequence. Position still has to count, though: `dog` and `god` are the same three characters in a different order. So if order is to register at all, it has to be written into the vectors themselves — a second learned table gives each slot (1st, 2nd, 3rd, … up to the context length) its own vector, and that is added to the character's. The vector that enters the model at position $$i$$ now carries both facts at once: $$x_i = e_{\text{char}}(c_i) + e_{\text{pos}}(i)$$, what the character is plus where it is.
 
-**Heads, blocks, and depth.** One set of query/key/value is a single line of inquiry; six run in parallel (each in a smaller subspace) so the model can track several kinds of relationship at once, then concatenate and mix their outputs. This attention sublayer is paired with a small per-token MLP — attention lets tokens *communicate*, the feed-forward lets each one *think* — and each of the two sublayers is wrapped in a **residual connection** (a gradient shortcut straight through the block) and **layer normalization** (a cousin of the batch norm from [part III]({{ '/projects/makemore_batchnorm/' | relative_url }})). Six such blocks, with token and position embeddings at the bottom and one linear layer + softmax at the top, is the whole model.
+**Self-attention.** A head of self-attention rewrites each $$x_i$$ as a weighted sum of the vectors at the earlier positions. The crudest choice of weights is a flat average of $$x_1,\dots,x_i$$ — but that counts every earlier character equally and never changes. Attention keeps the weighted-sum shape and lets the weights **depend on the content**, so one position can lean almost entirely on the character five back while the next spreads across a whole word.
+
+The weights come from a score for each ordered pair $$(i,j)$$. From every vector the layer makes two more by multiplying by learned matrices — a **query** $$q_i = W_q x_i$$ and a **key** $$k_j = W_k x_j$$, each just a linear layer ($$Wx$$, as in makemore) — and scores the pair by their dot product $$q_i\cdot k_j$$, which is large when the two point the same way. Keeping $$W_q$$ and $$W_k$$ separate is what lets the model learn *which* pairing to reward: $$q_i\cdot k_j = x_i^\top (W_q^\top W_k)\,x_j$$ is one learned rule for scoring one character's vector against another's. For a fixed $$i$$, a **softmax** over the scores against every $$j\le i$$ gives the **attention weights** $$a_{ij} = \operatorname{softmax}_j\!\big(q_i\cdot k_j/\sqrt{d_k}\big)$$ — positive and summing to one. Two refinements: the mask sets the score to $$-\infty$$ for $$j>i$$ so a character never reads from the future it must predict, and the divisor $$\sqrt{d_k}$$ (the query/key length) keeps the dot products from growing so large that the softmax collapses onto one position and stalls.
+
+Those weights say how much each earlier position contributes; *what* it contributes is a third projection, the **value** $$v_j = W_v x_j$$. The updated vector reuses the very same weights to sum the values: $$y_i = \sum_{j\le i} a_{ij}\, v_j$$. That is one **head** — three matrices $$W_q, W_k, W_v$$, a masked and scaled softmax of dot products, and a weighted sum of values. Its whole power is that the weights are read off the input, so the identical layer combines the past one way after `the` and another after `Socrates`, and the scores for all positions are a single matrix multiply, computed at once rather than left to right.
+
+{::nomarkdown}
+<div class="transformer-fig attn-fig">
+<svg id="attnfig" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 448" width="100%" role="img" aria-label="Worked example of one self-attention head over the string 'wisdom': each character becomes a character embedding plus a position embedding, then query, key and value projections, then a causal matrix of attention weights.">
+<style>
+  #attnfig text { font-family: system-ui,-apple-system,'Segoe UI',Roboto,sans-serif; fill: currentColor; }
+  #attnfig .mono { font-family: ui-monospace,'SF Mono',Menlo,monospace; }
+  #attnfig .mono2 { font-family: ui-monospace,'SF Mono',Menlo,monospace; opacity:.85; }
+  #attnfig .sub { opacity:.6; }
+  #attnfig .hd { opacity:.8; font-weight:600; }
+  #attnfig .op { opacity:.55; }
+  #attnfig .wt { fill:#0f5132; opacity:.9; }
+  #attnfig rect.cell { fill:none; stroke:currentColor; stroke-width:1; stroke-opacity:.4; }
+  #attnfig rect.acc { fill:#25965a; }
+  #attnfig rect.acell { fill:#25965a; }
+  #attnfig rect.agrid { fill:none; stroke:currentColor; stroke-width:1; stroke-opacity:.18; }
+  #attnfig rect.mask { fill:currentColor; fill-opacity:.04; stroke:currentColor; stroke-width:1; stroke-opacity:.10; }
+  #attnfig .arrow { stroke:currentColor; stroke-width:1.2; stroke-opacity:.5; fill:none; }
+</style>
+<defs>
+  <marker id="ah2" markerWidth="7" markerHeight="7" refX="5" refY="2.5" orient="auto">
+    <path d="M0,0 L5,2.5 L0,5 Z" fill="currentColor" fill-opacity=".5"/>
+  </marker>
+</defs>
+<text x="57" y="60" class="hd" font-size="10" text-anchor="middle">char</text>
+<text x="119.5" y="60" class="hd" font-size="10" text-anchor="middle">e_char</text>
+<text x="198.5" y="60" class="hd" font-size="10" text-anchor="middle">e_pos</text>
+<text x="277.5" y="60" class="hd" font-size="10" text-anchor="middle">x</text>
+<text x="277.5" y="72" class="sub" font-size="8.5" text-anchor="middle">= e_char + e_pos</text>
+<rect x="40" y="88.0" width="34" height="28" class="cell" rx="4"/>
+<text x="57" y="106.0" class="mono" font-size="14" text-anchor="middle">w</text>
+<text x="32" y="106.0" class="sub" font-size="9" text-anchor="end">0</text>
+<rect x="92" y="96.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.76"/>
+<rect x="103" y="96.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.59"/>
+<rect x="114" y="96.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.37"/>
+<rect x="125" y="96.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.19"/>
+<rect x="136" y="96.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.86"/>
+<text x="155" y="106.0" class="op" font-size="12" text-anchor="middle">+</text>
+<rect x="171" y="96.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.63"/>
+<rect x="182" y="96.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.64"/>
+<rect x="193" y="96.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.18"/>
+<rect x="204" y="96.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.29"/>
+<rect x="215" y="96.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.57"/>
+<text x="234" y="106.0" class="op" font-size="12" text-anchor="middle">=</text>
+<rect x="250" y="96.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.64"/>
+<rect x="261" y="96.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.56"/>
+<rect x="272" y="96.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.43"/>
+<rect x="283" y="96.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.34"/>
+<rect x="294" y="96.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.70"/>
+<rect x="40" y="128.0" width="34" height="28" class="cell" rx="4"/>
+<text x="57" y="146.0" class="mono" font-size="14" text-anchor="middle">i</text>
+<text x="32" y="146.0" class="sub" font-size="9" text-anchor="end">1</text>
+<rect x="92" y="136.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.84"/>
+<rect x="103" y="136.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.42"/>
+<rect x="114" y="136.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.73"/>
+<rect x="125" y="136.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.59"/>
+<rect x="136" y="136.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.37"/>
+<text x="155" y="146.0" class="op" font-size="12" text-anchor="middle">+</text>
+<rect x="171" y="136.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.87"/>
+<rect x="182" y="136.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.55"/>
+<rect x="193" y="136.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.51"/>
+<rect x="204" y="136.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.59"/>
+<rect x="215" y="136.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.65"/>
+<text x="234" y="146.0" class="op" font-size="12" text-anchor="middle">=</text>
+<rect x="250" y="136.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.45"/>
+<rect x="261" y="136.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.30"/>
+<rect x="272" y="136.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.41"/>
+<rect x="283" y="136.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.83"/>
+<rect x="294" y="136.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.80"/>
+<rect x="40" y="168.0" width="34" height="28" class="cell" rx="4"/>
+<text x="57" y="186.0" class="mono" font-size="14" text-anchor="middle">s</text>
+<text x="32" y="186.0" class="sub" font-size="9" text-anchor="end">2</text>
+<rect x="92" y="176.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.28"/>
+<rect x="103" y="176.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.58"/>
+<rect x="114" y="176.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.75"/>
+<rect x="125" y="176.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.37"/>
+<rect x="136" y="176.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.65"/>
+<text x="155" y="186.0" class="op" font-size="12" text-anchor="middle">+</text>
+<rect x="171" y="176.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.41"/>
+<rect x="182" y="176.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.48"/>
+<rect x="193" y="176.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.75"/>
+<rect x="204" y="176.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.65"/>
+<rect x="215" y="176.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.38"/>
+<text x="234" y="186.0" class="op" font-size="12" text-anchor="middle">=</text>
+<rect x="250" y="176.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.71"/>
+<rect x="261" y="176.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.67"/>
+<rect x="272" y="176.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.88"/>
+<rect x="283" y="176.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.56"/>
+<rect x="294" y="176.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.30"/>
+<rect x="40" y="208.0" width="34" height="28" class="cell" rx="4"/>
+<text x="57" y="226.0" class="mono" font-size="14" text-anchor="middle">d</text>
+<text x="32" y="226.0" class="sub" font-size="9" text-anchor="end">3</text>
+<rect x="92" y="216.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.39"/>
+<rect x="103" y="216.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.32"/>
+<rect x="114" y="216.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.29"/>
+<rect x="125" y="216.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.78"/>
+<rect x="136" y="216.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.78"/>
+<text x="155" y="226.0" class="op" font-size="12" text-anchor="middle">+</text>
+<rect x="171" y="216.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.72"/>
+<rect x="182" y="216.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.41"/>
+<rect x="193" y="216.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.22"/>
+<rect x="204" y="216.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.33"/>
+<rect x="215" y="216.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.39"/>
+<text x="234" y="226.0" class="op" font-size="12" text-anchor="middle">=</text>
+<rect x="250" y="216.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.31"/>
+<rect x="261" y="216.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.46"/>
+<rect x="272" y="216.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.74"/>
+<rect x="283" y="216.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.36"/>
+<rect x="294" y="216.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.75"/>
+<rect x="40" y="248.0" width="34" height="28" class="cell" rx="4"/>
+<text x="57" y="266.0" class="mono" font-size="14" text-anchor="middle">o</text>
+<text x="32" y="266.0" class="sub" font-size="9" text-anchor="end">4</text>
+<rect x="92" y="256.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.76"/>
+<rect x="103" y="256.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.66"/>
+<rect x="114" y="256.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.32"/>
+<rect x="125" y="256.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.25"/>
+<rect x="136" y="256.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.43"/>
+<text x="155" y="266.0" class="op" font-size="12" text-anchor="middle">+</text>
+<rect x="171" y="256.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.55"/>
+<rect x="182" y="256.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.74"/>
+<rect x="193" y="256.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.61"/>
+<rect x="204" y="256.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.32"/>
+<rect x="215" y="256.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.17"/>
+<text x="234" y="266.0" class="op" font-size="12" text-anchor="middle">=</text>
+<rect x="250" y="256.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.56"/>
+<rect x="261" y="256.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.81"/>
+<rect x="272" y="256.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.44"/>
+<rect x="283" y="256.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.61"/>
+<rect x="294" y="256.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.31"/>
+<rect x="40" y="288.0" width="34" height="28" class="cell" rx="4"/>
+<text x="57" y="306.0" class="mono" font-size="14" text-anchor="middle">m</text>
+<text x="32" y="306.0" class="sub" font-size="9" text-anchor="end">5</text>
+<rect x="92" y="296.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.62"/>
+<rect x="103" y="296.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.87"/>
+<rect x="114" y="296.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.23"/>
+<rect x="125" y="296.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.52"/>
+<rect x="136" y="296.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.45"/>
+<text x="155" y="306.0" class="op" font-size="12" text-anchor="middle">+</text>
+<rect x="171" y="296.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.81"/>
+<rect x="182" y="296.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.32"/>
+<rect x="193" y="296.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.75"/>
+<rect x="204" y="296.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.30"/>
+<rect x="215" y="296.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.46"/>
+<text x="234" y="306.0" class="op" font-size="12" text-anchor="middle">=</text>
+<rect x="250" y="296.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.67"/>
+<rect x="261" y="296.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.66"/>
+<rect x="272" y="296.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.48"/>
+<rect x="283" y="296.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.56"/>
+<rect x="294" y="296.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.22"/>
+<text x="40" y="346" class="hd" font-size="10" >each x is projected three ways, in parallel:</text>
+<rect x="48" y="386.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.67"/>
+<rect x="59" y="386.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.66"/>
+<rect x="70" y="386.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.48"/>
+<rect x="81" y="386.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.56"/>
+<rect x="92" y="386.5" width="9.5" height="9.5" rx="1.5" fill="currentColor" fill-opacity="0.22"/>
+<text x="75.5" y="412" class="sub" font-size="9" text-anchor="middle">x</text>
+<path d="M 109 392 C 141 392, 141 364, 173 364" class="arrow" marker-end="url(#ah2)"/>
+<rect x="177" y="358.5" width="9.5" height="9.5" rx="1.5" class="acc" fill-opacity="0.76"/>
+<rect x="188" y="358.5" width="9.5" height="9.5" rx="1.5" class="acc" fill-opacity="0.57"/>
+<rect x="199" y="358.5" width="9.5" height="9.5" rx="1.5" class="acc" fill-opacity="0.72"/>
+<rect x="210" y="358.5" width="9.5" height="9.5" rx="1.5" class="acc" fill-opacity="0.64"/>
+<rect x="221" y="358.5" width="9.5" height="9.5" rx="1.5" class="acc" fill-opacity="0.86"/>
+<text x="242" y="368" class="mono2" font-size="9.5" >q = W_q x</text>
+<path d="M 109 392 C 141 392, 141 392, 173 392" class="arrow" marker-end="url(#ah2)"/>
+<rect x="177" y="386.5" width="9.5" height="9.5" rx="1.5" class="acc" fill-opacity="0.81"/>
+<rect x="188" y="386.5" width="9.5" height="9.5" rx="1.5" class="acc" fill-opacity="0.48"/>
+<rect x="199" y="386.5" width="9.5" height="9.5" rx="1.5" class="acc" fill-opacity="0.54"/>
+<rect x="210" y="386.5" width="9.5" height="9.5" rx="1.5" class="acc" fill-opacity="0.64"/>
+<rect x="221" y="386.5" width="9.5" height="9.5" rx="1.5" class="acc" fill-opacity="0.69"/>
+<text x="242" y="396" class="mono2" font-size="9.5" >k = W_k x</text>
+<path d="M 109 392 C 141 392, 141 420, 173 420" class="arrow" marker-end="url(#ah2)"/>
+<rect x="177" y="414.5" width="9.5" height="9.5" rx="1.5" class="acc" fill-opacity="0.83"/>
+<rect x="188" y="414.5" width="9.5" height="9.5" rx="1.5" class="acc" fill-opacity="0.80"/>
+<rect x="199" y="414.5" width="9.5" height="9.5" rx="1.5" class="acc" fill-opacity="0.81"/>
+<rect x="210" y="414.5" width="9.5" height="9.5" rx="1.5" class="acc" fill-opacity="0.61"/>
+<rect x="221" y="414.5" width="9.5" height="9.5" rx="1.5" class="acc" fill-opacity="0.49"/>
+<text x="242" y="424" class="mono2" font-size="9.5" >v = W_v x</text>
+<text x="720.0" y="42" class="hd" font-size="11.5" text-anchor="middle">attention weights  a</text>
+<text x="720.0" y="56" class="sub" font-size="9" text-anchor="middle">row i (query) spreads 1.0 over columns j ≤ i</text>
+<text x="620.0" y="74" class="mono" font-size="11" text-anchor="middle">w</text>
+<text x="660.0" y="74" class="mono" font-size="11" text-anchor="middle">i</text>
+<text x="700.0" y="74" class="mono" font-size="11" text-anchor="middle">s</text>
+<text x="740.0" y="74" class="mono" font-size="11" text-anchor="middle">d</text>
+<text x="780.0" y="74" class="mono" font-size="11" text-anchor="middle">o</text>
+<text x="820.0" y="74" class="mono" font-size="11" text-anchor="middle">m</text>
+<text x="590" y="106.0" class="mono" font-size="11" text-anchor="end">w</text>
+<rect x="600" y="82" width="40" height="40" class="acell" fill-opacity="0.95"/>
+<rect x="600" y="82" width="40" height="40" class="agrid"/>
+<text x="620.0" y="106.0" class="wt" font-size="8.5" text-anchor="middle">1.00</text>
+<rect x="640" y="82" width="40" height="40" class="mask"/>
+<rect x="680" y="82" width="40" height="40" class="mask"/>
+<rect x="720" y="82" width="40" height="40" class="mask"/>
+<rect x="760" y="82" width="40" height="40" class="mask"/>
+<rect x="800" y="82" width="40" height="40" class="mask"/>
+<text x="590" y="146.0" class="mono" font-size="11" text-anchor="end">i</text>
+<rect x="600" y="122" width="40" height="40" class="acell" fill-opacity="0.60"/>
+<rect x="600" y="122" width="40" height="40" class="agrid"/>
+<text x="620.0" y="146.0" class="wt" font-size="8.5" text-anchor="middle">0.58</text>
+<rect x="640" y="122" width="40" height="40" class="acell" fill-opacity="0.45"/>
+<rect x="640" y="122" width="40" height="40" class="agrid"/>
+<text x="660.0" y="146.0" class="wt" font-size="8.5" text-anchor="middle">0.42</text>
+<rect x="680" y="122" width="40" height="40" class="mask"/>
+<rect x="720" y="122" width="40" height="40" class="mask"/>
+<rect x="760" y="122" width="40" height="40" class="mask"/>
+<rect x="800" y="122" width="40" height="40" class="mask"/>
+<text x="590" y="186.0" class="mono" font-size="11" text-anchor="end">s</text>
+<rect x="600" y="162" width="40" height="40" class="acell" fill-opacity="0.25"/>
+<rect x="600" y="162" width="40" height="40" class="agrid"/>
+<text x="620.0" y="186.0" class="wt" font-size="8.5" text-anchor="middle">0.18</text>
+<rect x="640" y="162" width="40" height="40" class="acell" fill-opacity="0.52"/>
+<rect x="640" y="162" width="40" height="40" class="agrid"/>
+<text x="660.0" y="186.0" class="wt" font-size="8.5" text-anchor="middle">0.50</text>
+<rect x="680" y="162" width="40" height="40" class="acell" fill-opacity="0.37"/>
+<rect x="680" y="162" width="40" height="40" class="agrid"/>
+<text x="700.0" y="186.0" class="wt" font-size="8.5" text-anchor="middle">0.32</text>
+<rect x="720" y="162" width="40" height="40" class="mask"/>
+<rect x="760" y="162" width="40" height="40" class="mask"/>
+<rect x="800" y="162" width="40" height="40" class="mask"/>
+<text x="590" y="226.0" class="mono" font-size="11" text-anchor="end">d</text>
+<rect x="600" y="202" width="40" height="40" class="acell" fill-opacity="0.30"/>
+<rect x="600" y="202" width="40" height="40" class="agrid"/>
+<text x="620.0" y="226.0" class="wt" font-size="8.5" text-anchor="middle">0.23</text>
+<rect x="640" y="202" width="40" height="40" class="acell" fill-opacity="0.20"/>
+<rect x="640" y="202" width="40" height="40" class="agrid"/>
+<rect x="680" y="202" width="40" height="40" class="acell" fill-opacity="0.62"/>
+<rect x="680" y="202" width="40" height="40" class="agrid"/>
+<text x="700.0" y="226.0" class="wt" font-size="8.5" text-anchor="middle">0.61</text>
+<rect x="720" y="202" width="40" height="40" class="acell" fill-opacity="0.13"/>
+<rect x="720" y="202" width="40" height="40" class="agrid"/>
+<rect x="760" y="202" width="40" height="40" class="mask"/>
+<rect x="800" y="202" width="40" height="40" class="mask"/>
+<text x="590" y="266.0" class="mono" font-size="11" text-anchor="end">o</text>
+<rect x="600" y="242" width="40" height="40" class="acell" fill-opacity="0.47"/>
+<rect x="600" y="242" width="40" height="40" class="agrid"/>
+<text x="620.0" y="266.0" class="wt" font-size="8.5" text-anchor="middle">0.44</text>
+<rect x="640" y="242" width="40" height="40" class="acell" fill-opacity="0.17"/>
+<rect x="640" y="242" width="40" height="40" class="agrid"/>
+<rect x="680" y="242" width="40" height="40" class="acell" fill-opacity="0.25"/>
+<rect x="680" y="242" width="40" height="40" class="agrid"/>
+<text x="700.0" y="266.0" class="wt" font-size="8.5" text-anchor="middle">0.18</text>
+<rect x="720" y="242" width="40" height="40" class="acell" fill-opacity="0.25"/>
+<rect x="720" y="242" width="40" height="40" class="agrid"/>
+<rect x="760" y="242" width="40" height="40" class="acell" fill-opacity="0.20"/>
+<rect x="760" y="242" width="40" height="40" class="agrid"/>
+<rect x="800" y="242" width="40" height="40" class="mask"/>
+<text x="590" y="306.0" class="mono" font-size="11" text-anchor="end">m</text>
+<rect x="600" y="282" width="40" height="40" class="acell" fill-opacity="0.23"/>
+<rect x="600" y="282" width="40" height="40" class="agrid"/>
+<rect x="640" y="282" width="40" height="40" class="acell" fill-opacity="0.28"/>
+<rect x="640" y="282" width="40" height="40" class="agrid"/>
+<text x="660.0" y="306.0" class="wt" font-size="8.5" text-anchor="middle">0.21</text>
+<rect x="680" y="282" width="40" height="40" class="acell" fill-opacity="0.16"/>
+<rect x="680" y="282" width="40" height="40" class="agrid"/>
+<rect x="720" y="282" width="40" height="40" class="acell" fill-opacity="0.17"/>
+<rect x="720" y="282" width="40" height="40" class="agrid"/>
+<rect x="760" y="282" width="40" height="40" class="acell" fill-opacity="0.45"/>
+<rect x="760" y="282" width="40" height="40" class="agrid"/>
+<text x="780.0" y="306.0" class="wt" font-size="8.5" text-anchor="middle">0.41</text>
+<rect x="800" y="282" width="40" height="40" class="acell" fill-opacity="0.16"/>
+<rect x="800" y="282" width="40" height="40" class="agrid"/>
+<text x="854" y="106.0" class="sub" font-size="9" >← masked</text>
+<text x="720.0" y="344" class="sub" font-size="9.5" text-anchor="middle">y_i = Σ_j  a_ij · v_j   (upper triangle masked: no peeking ahead)</text>
+</svg>
+<p class="transformer-fig-cap">One head over the string <code>wisdom</code> (weights illustrative). Each character becomes a vector <em>e_char&nbsp;+&nbsp;e_pos</em>; that vector is projected into a query, a key, and a value; and the attention weights <em>a</em> &mdash; a causal, row-normalized matrix of the scaled dot products <em>q<sub>i</sub>&middot;k<sub>j</sub></em> &mdash; mix the values into each position&rsquo;s update.</p>
+</div>
+{:/nomarkdown}
+
+**Heads, and the block.** One set of $$W_q, W_k, W_v$$ learns to look for a single kind of relationship — say, tie a pronoun back to the name it stands for. A sentence has many such relationships going at once, so the layer runs several of these units, called **heads**, side by side; each has its own three matrices and works in its own shorter slice of the vector (six heads here, each producing a vector one-sixth the length). Their outputs are laid end to end back into a full-length vector and passed through one more learned matrix that lets them combine. That is **multi-head attention**: several attention patterns computed in parallel, then merged.
+
+Attention only gathers. At each position it pulls in vectors from the earlier positions and blends them into one, and a blend is an average — it lands somewhere *between* the vectors it was handed. That is enough to carry two facts into the same position's vector side by side — "a capitalized word sits here" and "this is the start of a line" — but not to *act* on the pair: to turn "both are present" into a fresh conclusion such as "the next character is a colon." That step — computing a new value out of what a vector already holds — is exactly the thing averaging cannot do.
+
+That is the whole job of the block's second half: once attention has filled a position's vector, the vector is passed through a small **MLP** — the very network from makemore, the same one at every position and applied to each on its own: a linear layer that widens the vector to four times its length, a **ReLU**, then a linear layer back down. Why the nonlinearity earns its keep is the old makemore lesson made concrete. A linear layer can only form weighted sums of its inputs, and a weighted sum $$w_1 a + w_2 b$$ is already large the moment *either* $$a$$ or $$b$$ is large — it can never hold out for *both*. A single ReLU unit can: set it to $$\operatorname{ReLU}(a + b - 1.5)$$, and with each feature near $$1$$ when present and $$0$$ when absent, the sum clears zero only when $$a$$ and $$b$$ are both on — a detector that fires on the *and*. That kink is the entire reason for the ReLU, and the reason two linear layers with nothing between them would be pointless here: a matrix followed by a matrix is just one matrix, back to weighted sums. The fourfold widening lays out a whole bank of such detectors at once, and the second linear layer reads what they found and writes the result back into the vector. Attention carried information between positions; the MLP, one position at a time, turns it into new features.
+
+Two more pieces let these blocks stack six deep and still train. The first is the **residual connection**: rather than replace its input, each sublayer *adds* to it, $$x \mapsto x + \text{sublayer}(x)$$. The reason is the gradient. Training a deep stack means sending the loss's gradient from the top all the way back to the first block, and at an ordinary layer that gradient is multiplied by the layer's own derivatives as it passes through; chain enough layers together and those factors compound until the signal either vanishes or explodes — the same instability [part III]({{ '/projects/makemore_batchnorm/' | relative_url }}) ran into at initialization. Because the derivative of $$x + \text{sublayer}(x)$$ with respect to $$x$$ is $$1$$ plus the sublayer's term, the addition opens a path along which the gradient returns to every earlier block directly, undiminished by the layers in between — so even the bottom of the stack keeps receiving a usable signal.
+
+The second is **layer normalization**, applied to a position's vector just before each sublayer reads it. Because every block *adds* its result back into the same running vector, the entries of that vector tend to grow larger as it climbs the stack, and a sublayer handed very large or very lopsided numbers behaves badly — the dot products inside attention's softmax saturate, and gradients go flat. Layer norm heads this off by fixing the scale first: it subtracts the mean of that one vector's entries and divides by their standard deviation, leaving zero mean and unit variance, then multiplies by a learned gain and adds a learned bias so the model can restore whatever scale actually turns out to be useful. It is part III's batch norm applied along a different axis — across each position's own entries rather than across the batch — so no position's normalization depends on any other. Stack six such blocks, feed the character and position embeddings in at the bottom, and cap the top with a final layer norm and a single linear layer scoring each of the 78 possible next characters — that is the whole model.
 
 **A GPT is half of the original.** The 2017 architecture is an *encoder–decoder*, built to turn one sequence into another (say, English into German). A model that only ever continues a single stream keeps just the **decoder** — and drops even the decoder's cross-attention, the sublayer that existed solely to read from the encoder. What remains is the right-hand column below, mapped one-to-one onto the paper's own schematic:
 
@@ -292,23 +572,27 @@ The result is ~10.8M parameters that learn to *dream* in Plato — the cadence o
 <rect x="618" y="311" width="224" height="145" rx="7" class="stackbox"/>
 <text x="854" y="386" class="bl cap" font-size="12">6×</text>
 <line x1="730" y1="453" x2="730" y2="452" class="arrow" marker-end="url(#ah)"/>
-<rect x="630" y="285" width="200" height="26" rx="5" class="keep"/>
-<text x="730" y="298" class="bl keept" font-size="10.5">Linear  (lm_head)</text>
-<line x1="730" y1="319" x2="730" y2="311" class="arrow" marker-end="url(#ah)"/>
-<rect x="630" y="249" width="200" height="26" rx="5" class="keep"/>
-<text x="730" y="262" class="bl keept" font-size="10.5">Softmax</text>
-<line x1="730" y1="285" x2="730" y2="275" class="arrow" marker-end="url(#ah)"/>
-<text x="730" y="235" class="bl cap" font-size="9.5">next-character probabilities</text>
+<line x1="730" y1="311" x2="730" y2="308" class="arrow" marker-end="url(#ah)"/>
+<rect x="630" y="282" width="200" height="26" rx="5" class="keep"/>
+<text x="730" y="295" class="bl keept" font-size="10.5">LayerNorm</text>
+<line x1="730" y1="282" x2="730" y2="272" class="arrow" marker-end="url(#ah)"/>
+<rect x="630" y="246" width="200" height="26" rx="5" class="keep"/>
+<text x="730" y="259" class="bl keept" font-size="10.5">Linear  (lm_head)</text>
+<line x1="730" y1="246" x2="730" y2="236" class="arrow" marker-end="url(#ah)"/>
+<rect x="630" y="210" width="200" height="26" rx="5" class="keep"/>
+<text x="730" y="223" class="bl keept" font-size="10.5">Softmax</text>
+<line x1="730" y1="210" x2="730" y2="200" class="arrow" marker-end="url(#ah)"/>
+<text x="730" y="192" class="bl cap" font-size="9.5">next-character probabilities</text>
 <rect x="30" y="561" width="16" height="12" rx="3" class="keep"/>
 <text x="96" y="570" class="bl cap" font-size="10">kept in a GPT</text>
 <rect x="180" y="561" width="16" height="12" rx="3" class="drop"/>
 <text x="268" y="570" class="bl cap" font-size="10">dropped (no encoder)</text>
 </svg>
-<p class="transformer-fig-cap">Left, the Transformer as Vaswani&nbsp;et&nbsp;al. drew it (redrawn); right, platoGPT. Grey out the encoder and the decoder&rsquo;s cross-attention sublayer and the two columns collapse into one &mdash; a decoder-only transformer. (One later refinement this model adopts: layer&nbsp;norm is applied <em>before</em> each sublayer, not after.)</p>
+<p class="transformer-fig-cap">Left, the Transformer as Vaswani&nbsp;et&nbsp;al. drew it (redrawn); right, platoGPT. Grey out the encoder and the decoder&rsquo;s cross-attention sublayer and the two columns collapse into one &mdash; a decoder-only transformer. This model also uses <em>pre-norm</em> blocks (layer&nbsp;norm before each sublayer, not after), so the residual stream needs one final&nbsp;LayerNorm before the output head &mdash; the extra box the paper&rsquo;s post-norm decoder does without.</p>
 </div>
 {:/nomarkdown}
 
-Trained on ~1.2 MB of Plato for 5,000 steps, the loss falls from a random-guess $$\ln(78)\approx 4.36$$ down to about $$1.0$$ nat per character — the point where the samples stop being noise and start sounding like a philosopher who has lost the thread. The stream above isn't computed live in your browser (running a 10.8M-parameter transformer forever on every visitor's phone would be unkind) — I generated a large corpus offline and the page loops it. Everything you read is the model's own output; the notebook below builds and trains it from first principles.
+Trained on ~1.2 MB of Plato for 5,000 steps, the loss falls from a random-guess $$\ln(78)\approx 4.36$$ down to about $$1.0$$ nat per character — the point where the samples stop being noise and start sounding like a philosopher who has lost the thread. The stream above isn't computed live in your browser (running a 10.8M-parameter transformer forever on every visitor's phone would be unkind) — I generated a large corpus offline and the page loops it. Everything you read is the model's own output.
 
 {::nomarkdown}
 {% assign jupyter_path = "assets/jupyter/platoGPT.ipynb" | relative_url %}
