@@ -1,12 +1,12 @@
 {
   "basics": {
     "name": "Austin Meadows",
-    "label": "Computational Scientist",
+    "label": "Computational Biologist & Machine Learning Engineer",
     "image": "",
     "email": "austxn.meadows@gmail.com",
-    "phone": "(631) 902-4991",
+    "phone": "(+1) 631 902-4991",
     "url": "https://pocketmarble.github.io",
-    "summary": "PhD-trained computational scientist with a decade of experience turning complex oncology questions into reproducible statistical code, analytic datasets, and real-world evidence. Cancer-research background spans hepatocellular carcinoma, melanoma, and immuno-oncology, including a Nature Communications consortium benchmark of statistical cell-type deconvolution methods. Fluent in R (tidyverse) and Python with deep multi-omics, statistical analysis, and machine-learning experience across 8 peer-reviewed publications and $4.4M in funded research.",
+    "summary": "Computational biologist and machine learning engineer finishing a PhD (est. December 2026) at Icahn School of Medicine at Mount Sinai and Instituto de Salud Carlos III, with a decade of wet/dry lab research across oncology, immunology, and multi-omics genomics. Grounded in applied mathematics and biostatistics: runs studies end to end, from experimental design and statistical analysis plans through quality control and publication-grade analysis of large molecular and clinical datasets. Hands-on PyTorch and transformer engineering with models built from scratch; builds LLM agents on the Anthropic API and measures them against human labels; works extensively with AI coding agents, local models, and cloud GPU infrastructure. Evaluates frontier AI models as an expert contributor. Co-author of papers in Nature Communications, Nature Cancer, and Genes & Development, including a community benchmark of computational methods. Focused on applying AI/ML and rigorous statistics to biomedical research and real-world evidence.",
     "location": {
       "address": "",
       "postalCode": "NY 11222",
@@ -16,76 +16,82 @@
     },
     "profiles": [
       {
-        "network": "",
-        "username": "",
-        "url": ""
+        "network": "GitHub",
+        "username": "pocketmarble",
+        "url": "https://github.com/pocketmarble"
+      },
+      {
+        "network": "LinkedIn",
+        "username": "meadowsaustin",
+        "url": "https://www.linkedin.com/in/meadowsaustin"
       }
     ]
   },
   "work": [
     {
-      "name": "Immunome AI Biotechnologies",
-      "position": "Founding Scientist",
+      "name": "Meridian AI",
+      "position": "Expert Contributor",
       "url": "",
-      "startDate": "2025-09-01",
+      "location": "New York, NY",
+      "startDate": "2026-07-01",
       "endDate": "",
-      "summary": "AI platform for immune profiling and drug-target discovery (New York, NY)",
+      "summary": "",
       "highlights": [
-        "Co-developed iMEMORY, an AI platform generating clinically relevant immune-profiling and drug-target-discovery insights from heterogeneous patient data, advising on platform design and biological interpretation of model outputs",
-        "Nominated in-silico therapeutic gene targets and supplied doctoral datasets used in a cross-species validation of the platform's predictions",
-        "Produced investor-facing scientific materials and presentations that translated complex model outputs for non-technical stakeholders"
-      ]
-    },
-    {
-      "name": "Icahn School of Medicine at Mount Sinai / Instituto de Salud Carlos III",
-      "position": "Ph.D. Candidate, Biomedical Sciences & Public Health",
-      "url": "",
-      "startDate": "2023-12-01",
-      "endDate": "2026-12-01",
-      "summary": "Pathology of trained immunity in the lab of Dr. Jordi Ochando (New York, NY / Madrid, Spain)",
-      "highlights": [
-        "Designed and coordinated a multi-omics study of trained immunity, generating and analyzing ATAC-seq, RNA-seq, and CUT&RUN data through reproducible, version-controlled R and Python pipelines",
-        "Built the first ex-vivo model and the first clinical-setting diagnostic for dialysis-mediated trained immunity, bridging bench data to a translational clinical readout",
-        "Authored a publication-grade manuscript end to end, including the statistical analysis plan, descriptive and inferential statistics, and all figures"
+        "Write research-grounded reasoning challenges that expose failures in frontier AI models; scope expanded to co-developing evaluation rubrics and stumping strategies for oncology"
       ]
     },
     {
       "name": "Icahn School of Medicine at Mount Sinai",
+      "position": "PhD Candidate, Biomedical Sciences & Public Health",
+      "url": "",
+      "location": "New York, NY / Madrid, Spain",
+      "startDate": "2023-12-01",
+      "endDate": "2026-12-01",
+      "summary": "In collaboration with Instituto de Salud Carlos III",
+      "highlights": [
+        "Thesis: how extracorporeal blood circulation during dialysis induces central trained immunity, in collaboration with Instituto de Salud Carlos III, using human patient samples and a mouse model profiled with RNA-seq, ATAC-seq, and CUT&Tag",
+        "Ran quality control, batch correction, and sample-metadata reconciliation for multi-omics data prepared by multiple people across separate accessioning systems",
+        "Authored a publication-grade statistical analysis plan; built reproducible, version-controlled Python/R pipelines covering feature prep, modeling, inferential statistics, and figures",
+        "Built the first ex-vivo model of dialysis-mediated trained immunity, with a diagnostic readout used within the lab"
+      ]
+    },
+    {
+      "name": "Icahn School of Medicine at Mount Sinai (Tisch Cancer Institute)",
       "position": "Associate Researcher",
       "url": "",
+      "location": "New York, NY",
       "startDate": "2021-12-01",
       "endDate": "2025-09-01",
-      "summary": "Genomics and computational-biology subject-matter expert, Tisch Cancer Institute",
+      "summary": "",
       "highlights": [
-        "Generated the preliminary data underpinning successful NIAID and NCI grant applications totaling $4.4M",
-        "Served as genomics and computational-biology subject-matter expert for multiple labs across the Tisch Cancer Institute, MGH, and WashU, delivering analyses in a cross-institutional environment",
-        "Elucidated the mechanism of action of novel hepatocellular-carcinoma chemotherapy WNTinib (Rialdi et al., Nature Cancer, 2023)",
-        "Identified two protein complexes whose disruption arrests melanoma cell-cycle progression, enabling a new epigenetic strategy for drug-resistant melanoma (Jostes et al., Genes & Development, 2024)",
-        "Developed the first nanoparticle biologic to attenuate allograft fibrosis by silencing immune training (Mineura et al., Am. J. Transplantation, 2026)"
+        "Genomics and computational-biology subject-matter expert across multiple labs (Tisch, MGH, WashU), delivering analyses and tooling in a cross-institutional environment",
+        "Generated preliminary data underpinning successful NIAID and NCI grant applications totaling $4.4M"
       ]
     },
     {
       "name": "Girihlet, Inc.",
       "position": "Sequencing Core Technician",
       "url": "",
+      "location": "New York, NY",
       "startDate": "2021-02-01",
       "endDate": "2021-12-01",
-      "summary": "Next-generation sequencing services for the NYC research community",
+      "summary": "",
       "highlights": [
-        "Engineered a Python interface that automated creation and submission of NGS protocols to a liquid-handling robot, eliminating manual workflows and saving tens of thousands of dollars in annual overhead",
-        "Delivered tailored NGS services and experimental consultation to NYC-area biomedical research clients"
+        "Built a Python interface that drives a liquid-handling robot to automate NGS protocols, saving tens of thousands of dollars annually",
+        "Processed longitudinal blood samples from a human vaccine cohort, from collection through sequencing libraries, for T-cell receptor repertoire profiling (Mohammed et al., 2021)"
       ]
     },
     {
       "name": "NYIT College of Osteopathic Medicine",
       "position": "Research Technician",
       "url": "",
+      "location": "Long Island, NY",
       "startDate": "2018-11-01",
       "endDate": "2020-07-01",
-      "summary": "Computational and translational research, Dept. of Biomedical Sciences (Long Island, NY)",
+      "summary": "",
       "highlights": [
-        "Built an in-silico cell-type deconvolution method estimating tumor composition from bulk RNA-seq; benchmarked against community methods in a Nature Communications consortium study (White et al., 2024)",
-        "Extended the CPA algorithm with a machine-learning post-processing layer (CNN + autoencoder) for single-molecule localization microscopy, trained on a synthetic dataset generated from a physical model of the microscope"
+        "Built an in-silico cell-type deconvolution method estimating tumor composition from bulk RNA-seq (White et al., 2024)",
+        "Extended the CPA algorithm for single-molecule localization microscopy with a deep learning layer (CNN + autoencoder) trained on synthetic microscope data"
       ]
     }
   ],
@@ -99,7 +105,9 @@
       "startDate": "2023-12-01",
       "endDate": "2026-12-01",
       "score": "",
-      "courses": [""]
+      "courses": [
+        ""
+      ]
     },
     {
       "institution": "Stony Brook University",
@@ -110,7 +118,9 @@
       "startDate": "2015-01-27",
       "endDate": "2018-05-18",
       "score": "",
-      "courses": [""]
+      "courses": [
+        ""
+      ]
     },
     {
       "institution": "Stony Brook University",
@@ -121,7 +131,9 @@
       "startDate": "2015-01-27",
       "endDate": "2018-05-18",
       "score": "",
-      "courses": [""]
+      "courses": [
+        ""
+      ]
     }
   ],
   "publications": [
@@ -134,7 +146,7 @@
     },
     {
       "name": "Investigating the induction of trained immunity in myeloid-derived monocytes following extracorporeal circulation",
-      "publisher": "Manuscript in progress",
+      "publisher": "Manuscript in preparation",
       "releaseDate": "2026-01-01",
       "url": "",
       "summary": "Characterizing the induction of trained immunity in myeloid-derived monocytes following extracorporeal circulation."
@@ -154,14 +166,14 @@
       "summary": "H2A.Z chaperone complexes SRCAP and P400–TIP60 coordinate H2A.Z deposition and H4 acetylation to promote melanoma proliferation, with YL1 overexpression linked to poor prognosis and apoptosis upon its loss, highlighting them as potential therapeutic targets."
     },
     {
-      "name": "Active Learning Exercises in Synaptic Physiology and Connectivity for the Neuroscience Lecture Hall, Laboratory Course, or Outreach Setting",
+      "name": "Active learning exercises in synaptic physiology and connectivity for the neuroscience lecture hall, laboratory course, or outreach setting",
       "publisher": "Journal of Undergraduate Neuroscience Education",
       "releaseDate": "2024-12-24",
       "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11728993/",
       "summary": "We present novel active learning exercises for teaching neuronal circuits and synaptic connectivity in lecture-based neuroscience courses to enhance student understanding and retention."
     },
     {
-      "name": "WNTinib is a multi-kinase inhibitor with specificity against beta-catenin mutant hepatocellular carcinoma",
+      "name": "WNTinib is a multi-kinase inhibitor with specificity against β-catenin mutant hepatocellular carcinoma",
       "publisher": "Nature Cancer",
       "releaseDate": "2023-08-03",
       "url": "https://www.nature.com/articles/s43018-023-00609-9",
@@ -169,14 +181,14 @@
     },
     {
       "name": "The T cell receptor repertoire reflects the dynamics of the immune response to vaccination",
-      "publisher": "BioRxiv",
+      "publisher": "bioRxiv (preprint)",
       "releaseDate": "2021-12-19",
       "url": "https://www.biorxiv.org/content/10.1101/2021.12.09.471735v2.abstract",
       "summary": "Tseek, a novel TCR repertoire sequencing method, enables early, detailed, and non-invasive profiling of individual T cell responses to vaccines, revealing unique immune dynamics and potential for personalized immune monitoring."
     },
     {
       "name": "Click chemistry approaches to expand the repertoire of PEG-based fluorinated surfactants for droplet microfluidics",
-      "publisher": "Royal Society of Chemistry",
+      "publisher": "RSC Advances",
       "releaseDate": "2018-04-06",
       "url": "https://pubs.rsc.org/en/content/articlelanding/2018/ra/c8ra01254g",
       "summary": "We developed a simplified, click chemistry-based synthesis of novel fluorinated PFPE–PEG surfactants that stabilize droplets in microfluidics, enabling easier production of diverse, biocompatible emulsions."
@@ -184,51 +196,89 @@
   ],
   "skills": [
     {
-      "name": "Scientific Programming",
-      "level": "Master",
+      "name": "Domain Expertise",
+      "level": "",
       "icon": "fa-solid fa-hashtag",
       "keywords": [
-        "R (tidyverse)", "Python (pandas, NumPy)", "SQL", "Bash", "MATLAB", "C/C++", "SPSS", "Prism"
+        "immunology & trained immunity",
+        "cancer biology/oncology",
+        "genomics & multi-omics (RNA-seq, ATAC-seq, CUT&Tag, CUT&RUN)",
+        "molecular biology",
+        "biostatistics & experimental design",
+        "survival analysis",
+        "public health"
       ]
     },
     {
       "name": "Machine Learning",
-      "level": "Master",
+      "level": "",
       "icon": "fa-solid fa-hashtag",
       "keywords": [
-        "statistical modeling", "PyTorch", "transformers/LLMs", "CNNs", "GNNs", "model training", "fine-tuning", "evaluation", "backpropagation/autograd"
+        "PyTorch",
+        "transformers/LLMs",
+        "CNNs",
+        "GNNs",
+        "autoencoders",
+        "scikit-learn",
+        "training",
+        "fine-tuning",
+        "evaluation",
+        "hyperparameter tuning",
+        "autograd",
+        "bias/variance & validation"
       ]
     },
     {
-      "name": "Biomedical & Real-World Data",
-      "level": "Master",
+      "name": "AI & LLM Tooling",
+      "level": "",
       "icon": "fa-solid fa-hashtag",
       "keywords": [
-        "multi-omics integration", "RNA-seq", "ATAC-seq", "CUT&RUN/Tag", "ChIP-seq", "clinical-translational diagnostics", "genomics", "epigenetics", "immunology", "oncology", "cell-type deconvolution"
+        "Claude Code",
+        "OpenAI Codex",
+        "Anthropic API (agents, structured extraction)",
+        "local LLMs via llama.cpp with quantization",
+        "diffusion models with LoRA adapters"
       ]
     },
     {
-      "name": "Infrastructure",
-      "level": "Master",
+      "name": "Programming",
+      "level": "",
       "icon": "fa-solid fa-hashtag",
       "keywords": [
-        "Git/GitHub", "HPC (IBM LSF)", "Docker", "Conda", "scalable & reproducible pipelines"
+        "Python (primary)",
+        "R (tidyverse)",
+        "SQL",
+        "Bash",
+        "C/C++",
+        "MATLAB"
       ]
     },
     {
-      "name": "Wet Lab",
-      "level": "Master",
+      "name": "Infrastructure & MLOps",
+      "level": "",
       "icon": "fa-solid fa-hashtag",
       "keywords": [
-        "NGS library prep & QC", "flow cytometry", "immunofluorescence/microscopy", "qPCR", "ELISA", "western blot", "cell culture", "mouse work"
+        "Git/GitHub",
+        "Docker",
+        "Conda",
+        "HPC (IBM LSF)",
+        "GCP",
+        "AWS",
+        "cloud GPU virtual machines",
+        "CI-style reproducible pipelines"
       ]
     },
     {
-      "name": "Leadership",
-      "level": "Master",
+      "name": "Data Engineering",
+      "level": "",
       "icon": "fa-solid fa-hashtag",
       "keywords": [
-        "cross-functional & cross-institutional research", "grant writing", "manuscript & technical writing", "scientific presentation", "lab management"
+        "large-scale data gathering",
+        "public data mining (GEO)",
+        "QC & batch correction",
+        "feature preparation",
+        "multi-omics integration",
+        "analytic dataset construction"
       ]
     }
   ],
@@ -269,16 +319,56 @@
   ],
   "projects": [
     {
-      "name": "micrograd",
-      "summary": "Built a neural network and reverse-mode autograd engine from scratch in pure Python (no ML frameworks), implementing backpropagation, ReLU/tanh activations, hinge loss, and SGD.",
-      "highlights": ["pure Python", "autograd", "backpropagation", "SGD"],
-      "url": "https://pocketmarble.github.io/projects/micrograd/"
+      "name": "Job-discovery agent",
+      "summary": "Claude, via the Anthropic API, turns a resume into a structured profile, then finds, scores, and ranks live job postings. Built an evaluation harness against human-labeled postings that exposed a scoring gap; fixing it halved the error.",
+      "highlights": [
+        "Anthropic API",
+        "LLM agents",
+        "evaluation harness"
+      ],
+      "url": "https://github.com/pocketmarble/job-discovery-agent"
+    },
+    {
+      "name": "iMEMORY",
+      "startDate": "2025-09-01",
+      "endDate": "2026-05-01",
+      "summary": "Scientific advisor to an early-stage AI drug-discovery startup building a graph neural network over ~30,700 public human gene-expression samples to classify disease state and nominate drug targets by in-silico perturbation, with small-molecule matching and AI-proposed compounds. Consulted on platform design, biology, and target nomination; supplied PhD data; pitched to investors.",
+      "highlights": [
+        "GNNs",
+        "drug-target discovery",
+        "in-silico perturbation"
+      ],
+      "url": ""
     },
     {
       "name": "nanoGPT",
-      "summary": "Built a decoder-only transformer language model from scratch in PyTorch, implementing multi-head self-attention, positional embeddings, and the full training loop.",
-      "highlights": ["PyTorch", "self-attention", "transformers"],
-      "url": ""
+      "summary": "Decoder-only transformer language model built from scratch in PyTorch, inspired by Andrej Karpathy's lectures.",
+      "highlights": [
+        "PyTorch",
+        "self-attention",
+        "transformers"
+      ],
+      "url": "https://pocketmarble.github.io/projects/platoGPT/"
+    },
+    {
+      "name": "makemore",
+      "summary": "Autoregressive character-level models with training diagnostics and a hand-derived backward pass.",
+      "highlights": [
+        "language models",
+        "training diagnostics",
+        "manual backprop"
+      ],
+      "url": "https://pocketmarble.github.io/projects/makemore/"
+    },
+    {
+      "name": "micrograd",
+      "summary": "Reverse-mode autograd engine in pure Python.",
+      "highlights": [
+        "pure Python",
+        "autograd",
+        "backpropagation"
+      ],
+      "url": "https://pocketmarble.github.io/projects/micrograd/"
     }
   ]
 }
